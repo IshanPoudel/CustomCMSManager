@@ -1,0 +1,4 @@
+{
+    "comment":"This is to specify which port the server will be listening in for request. In local host it will be 8000. When you deploy it will be in a server somewehre. ",
+    "port": 8000
+}
