@@ -5,11 +5,6 @@ A simple CMS (Content Management System) software for managing and generating AP
 ## Table of Contents
 - [Features](#features)
 - [Getting Started](#getting-started)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
