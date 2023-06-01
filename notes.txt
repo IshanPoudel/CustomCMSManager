@@ -1,0 +1,42 @@
+////////////////////////////////////LOGGING IN //////////////////////////////////////////
+
+UserID ,FirstName , LastName , Email , Password , created_atr , updated_at
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+When signing in check if the user_id or email is already not used. 
+
+Check if : userID or email already there  
+SELECT COUNT(*) AS count FROM users WHERE username = ? OR email = ?;
+
+
+lOG IN:
+
+ask for username , password. 
+see if it is in the table. 
+SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?;
+
+
+
+
+/////////////////////CREATING PROJECT /////////////////////////////////
+HAVE A Table for projects 
+id , user_id , project_name , project_descriptioin , created_at, updated_at
+
+
+project_databases: 
+Each table can have multiple databases. 
+id , project_id , database_id , created_at , updated_at
+
+
+Database:
+
+Acess databases through sql

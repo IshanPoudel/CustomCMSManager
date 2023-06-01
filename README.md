@@ -21,3 +21,11 @@ These instructions will guide you on setting up the CMS software on your local m
 1. Clone the repository:
    ```shell
    git clone https://github.com/your-repository.git
+
+
+
+### The ERD Diagram of the main databases of this are : 
+
+
+
+![ER Diagram](/assets/er_diagram.png)
