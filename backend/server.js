@@ -116,6 +116,9 @@ startServer().then(()=>
 
 // At this point , our app should be listening. 
 
+//LIsten for and send request to login
+//Listen for and send request to chekcback in
+//Program for canned queries. 
 
 
 

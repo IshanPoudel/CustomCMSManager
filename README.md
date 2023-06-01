@@ -24,8 +24,6 @@ These instructions will guide you on setting up the CMS software on your local m
 
 
 
-### The ERD Diagram of the main databases of this are : 
-
-
+### The ERD Diagram : 
 
 ![ER Diagram](/assets/er_diagram.png)

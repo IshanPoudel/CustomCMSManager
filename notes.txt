@@ -28,15 +28,68 @@ SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?;
 
 
 /////////////////////CREATING PROJECT /////////////////////////////////
-HAVE A Table for projects 
-id , user_id , project_name , project_descriptioin , created_at, updated_at
+
+project_id , user_id , project_name , project_descriptioin , created_at, updated_at
+
+CREATE TABLE projects (
+  project_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  project_name VARCHAR(255) NOT NULL,
+  project_description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+INSERT INTO projects (user_id, project_name, project_description) VALUES (1, 'My Project', 'This is a sample project');
 
 
-project_databases: 
-Each table can have multiple databases. 
-id , project_id , database_id , created_at , updated_at
+
+
+project_databases: (Depends on database_id)
+
+CREATE TABLE project_database (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  project_id INT NOT NULL,
+  database_id INT NOT NULL,
+  
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (project_id) REFERENCES projects (project_id),
+  FOREIGN KEY (database_id) REFERENCES database (database_id)
+);
+
+
+INSERT INTO project_database (project_id, database_id) VALUES (1, 1);
+
 
 
 Database:
+CREATE TABLE database (
+  database_id INT AUTO_INCREMENT PRIMARY KEY,
+  database_name VARCHAR(255) NOT NULL
+);
 
-Acess databases through sql
+INSERT INTO database(database_name) VALUES('DB1')
+
+
+
+
+
+API_Generator
+
+CREATE TABLE api_generator (
+  api_id INT AUTO_INCREMENT PRIMARY KEY,
+  project_id INT NOT NULL,
+  database_id INT NOT NULL,
+  canned_query TEXT,
+  generated_api_url VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (project_id) REFERENCES projects (project_id),
+  FOREIGN KEY (database_id) REFERENCES project_database (database_id)
+);
+
+
+
+INSERT INTO api_generator (project_id, database_id, canned_query, generated_api_url) VALUES (1, 1, 'SELECT * FROM users;', 'https://api.example.com/users');
