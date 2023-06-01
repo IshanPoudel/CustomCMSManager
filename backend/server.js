@@ -4,20 +4,44 @@ const cors = require("cors");
 const fs = require("fs");
 
 
-// Need to parse json data. 
 
 
-console.log("The file format is ")
-// console.log(jsonData)
 
-app.get("/" , (req , res) =>
+
+
+// Reading from a file is the same as fetching from an api , you need to handle both cases. 
+
+const startServer = async()=>
 {
-    console.log("this is the request that you get")
+    try
+    {
+        // Try reading in the data from the config file. 
+        const jsonData = await fs.promises.readFile('server_config.json' , {encoding:'utf-8'} );
+        // If succesfully read. 
+        console.log(jsonData)
+        
+        // Start the server. 
+        port = JSON.parse(jsonData).port
 
-} );
+
+        app.listen(port , ()=>
+        {
+            console.log(`Server is running on Port ${port}`);
+        })
+
+    }
+    catch(err)
+    {
+        console.log(err)
+        process.exit()
+
+    }
+}
 
 
-app.listen(8080 , ()=>
+startServer();
+// At this point , our app should be listening. 
+app.get("/" , (req,res)=>
 {
-    console.log(`Server is running on Port 8080`);
+    res.send("Hello world");
 })
