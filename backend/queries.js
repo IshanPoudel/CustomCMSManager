@@ -1,8 +1,16 @@
 // queries.js
 
+const createNewUser = (username , email , password)=>
+{
+  const query= 'INSERT INTO users(username , email , password) VALUES (? , ? , ?)';
+  const params = [username , email , password];
+
+  return {query , params}
+}
+
 const checkUserExistence = (username, email) => {
     const query = 'SELECT COUNT(*) AS count FROM users WHERE username = ? OR email = ?;';
-    const params = [username, email];
+    const params = [username, email ];
     return { query, params };
   };
   
@@ -25,8 +33,10 @@ const checkUserExistence = (username, email) => {
   };
   
   const createDatabase = (databaseName) => {
-    const query = 'INSERT INTO database (database_name) VALUES (?);';
+    const query = 'INSERT INTO databases_table (database_name) VALUES (?);';
     const params = [databaseName];
+    console.log("i got called from createDatabase")
+    console.log(query , params)
     return { query, params };
   };
   
@@ -37,6 +47,7 @@ const checkUserExistence = (username, email) => {
   };
   
   module.exports = {
+    createNewUser,
     checkUserExistence,
     loginUser,
     createProject,
