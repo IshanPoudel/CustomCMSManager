@@ -4,11 +4,11 @@ const fetch = require('node-fetch');
 // Need to find a way to authenticate from the project_id and user_id
 // Maybe need to do API calls at once and maintain ACID principles. 
 
-const url ='http://localhost:8000/create_project';
+
+const url ='http://localhost:8000/add_db_to_project';
 const data = {
-    userID:'1' , 
-    projectName : 'E-commerce' , 
-    projectDescription: 'E-commerce website' 
+    projectID: 1 , 
+    databaseId : 1
 
 };
 

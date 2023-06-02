@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 
 const url ='http://localhost:8000/create/database';
 const data = {
-    databaseName:'Images_for_get'
+    databaseName:'Images_for_get_new'
 
 };
 

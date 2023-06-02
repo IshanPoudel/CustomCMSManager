@@ -11,6 +11,8 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+INSERT INTO users (username, email, password) VALUES ('JohnDoe', 'johndoe@example.com', 'password123');
+
 
 When signing in check if the user_id or email is already not used. 
 
@@ -22,6 +24,7 @@ lOG IN:
 
 ask for username , password. 
 see if it is in the table. 
+
 SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?;
 
 

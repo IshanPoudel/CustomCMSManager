@@ -1,4 +1,5 @@
 // queries.js
+//Add abilities to preprocess the strings .
 
 const createNewUser = (username , email , password)=>
 {
@@ -40,11 +41,21 @@ const checkUserExistence = (username, email) => {
     return { query, params };
   };
   
-  const createAPI = (projectId, databaseId, cannedQuery, generatedApiUrl) => {
-    const query = 'INSERT INTO api_generator (project_id, database_id, canned_query, generated_api_url) VALUES (?, ?, ?, ?);';
-    const params = [projectId, databaseId, cannedQuery, generatedApiUrl];
-    return { query, params };
+  const createAPI = (api_name , api_description, query , response_type , on_error_response , on_success_response , generated_url) => {
+    const sql_query = 'INSERT INTO api (api_name, api_description, query, response_type, on_error_response, on_success_response , generated_url ) VALUES (?, ?, ?, ?,? , ?,?);';
+
+    const params = [api_name , api_description, query , response_type , on_error_response , on_success_response , generated_url];
+    console.log(sql_query , params)
+    return { query: sql_query, params };
   };
+
+  const addAPItoProject = (projectId , databaseId , apiId)=>
+  {
+    const query = 'INSERT INTO api_generator(api_id , project_id , database_id) VALUES (? , ? , ? );';
+    const params = [apiId , projectId , databaseId]
+    return {query , params};
+  }
+
   
   module.exports = {
     createNewUser,
@@ -54,5 +65,6 @@ const checkUserExistence = (username, email) => {
     createProjectDatabase,
     createDatabase,
     createAPI,
+    addAPItoProject
   };
   

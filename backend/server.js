@@ -115,9 +115,6 @@ startServer().then(()=>
     res.send('Hello World');
   })
 
-  
-
-  
 
   //Create a database for a project.
   app.post("/create/database" , (req,res)=>
@@ -151,6 +148,9 @@ startServer().then(()=>
         //Message sent when not created succesfully.
         res.status(201).json({message:"Database created succesfully"});
     });
+
+    //Once db is created , you need to add db to project. 
+    //Need to send db_id as a repsonse message.
 
   })
 
@@ -202,9 +202,10 @@ startServer().then(()=>
 
 
   })
+  
 
-  //Create a new project
-  app.post('create/project' , (res , req)=>
+//   Create a new project
+  app.post('/create_project' , (req , res)=>
   {
     console.log('I got called')
     const payload = req.body;
@@ -240,6 +241,96 @@ startServer().then(()=>
 
 
   })
+
+  //Add db to project. //Given the projectId and databaseId you can add things to there. 
+  app.post('/add_db_to_project' , (req, res)=>
+  {
+    const payload = req.body;
+
+    const projectID = payload.projectID 
+    const databaseId = payload.databaseId
+
+    query_and_param = queries.createProjectDatabase(projectID , databaseId)
+
+    const query_sql = query_and_param.query;
+    const params = query_and_param.params;
+
+    connection.query(query_sql , params , (error , result)=>
+    {
+        if (error)
+        {
+            console.error("Error adding database to the project"+ error)
+            // Message sent upon variable
+            res.status(500).json({error: "Failed to add database to the project"});
+            return;
+        }
+        
+        //Message sent when not created succesfully.
+        res.status(201).json({message:"Succesfully added database to the project"});
+    });
+
+
+
+
+
+
+
+
+  });
+  
+
+  //Generate api project.
+  app.post('/generate_api' , (req , res)=>
+  {
+    // We won't have everything in the request form , we would need to add generatedURL ourselves. 
+
+    // api_name , api_description, query , response_type , on_error_response , on_success_response
+    //get project_id , database_id , canned_query
+    const payload = req.body;
+
+    const api_name = payload.api_name;
+    const api_description = payload.api_description;
+    const query = payload.query;
+    const response_type = payload.response_type;
+    const on_error_response = payload.on_error_response;
+    const on_success_response = payload.on_success_response;
+    
+
+    //Find a way to generate a const API URL 
+    const api_url = 'localhost/add_user_id/project_id/db_id'
+   
+
+    query_and_param = queries.createAPI(api_name , api_description , query , response_type , on_error_response , on_success_response , api_url);
+
+    const query_sql = query_and_param.query;
+    const params = query_and_param.params;
+
+    console.log(query_sql , params)
+
+    connection.query(query_sql , params , (error , result)=>
+    {
+        if (error)
+        {
+            console.error("Error generating API"+ error)
+            // Message sent upon variable
+            res.status(500).json({error: "Failed to generate API"});
+            return;
+        }
+        
+        //Message sent when not created succesfully.
+        res.status(201).json({message:"Succesfully generated API"});
+    });
+
+    //Once you generate api , you need to add it to the api_database , use transactionl later on . 
+    //Also need to store the api_id that you get after the table has been created.
+    
+
+
+
+  }) 
+
+
+  
 
 
 

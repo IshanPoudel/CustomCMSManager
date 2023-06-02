@@ -42,16 +42,30 @@ CREATE TABLE project_database (
 );
 
 
+-- api-table------
+
+CREATE TABLE api (
+  api_id INT AUTO_INCREMENT PRIMARY KEY,
+  api_name VARCHAR(255) NOT NULL,
+  api_description TEXT,
+  query TEXT,
+  response_type VARCHAR(50),
+  on_error_response TEXT,
+  on_success_response TEXT,
+  generated_url varchar(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
 
 -- api_generator table
 CREATE TABLE api_generator (
-  api_id INT AUTO_INCREMENT PRIMARY KEY,
+  api_id INT NOT NULL,
   project_id INT NOT NULL,
   database_id INT NOT NULL,
-  canned_query TEXT,
-  generated_api_url VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  
   FOREIGN KEY (project_id) REFERENCES projects (project_id),
-  FOREIGN KEY (database_id) REFERENCES project_database (id)
+  FOREIGN KEY (database_id) REFERENCES project_database (id),
+  FOREIGN KEY (api_id) REFERENCES api(api_id)
 );
