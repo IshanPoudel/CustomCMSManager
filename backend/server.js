@@ -88,6 +88,7 @@ const connectToSql = async()=>
             {
                 console.error("Error connecting to the database" + error.stack)
 
+
                 return;
             }
 
@@ -116,43 +117,117 @@ startServer().then(()=>
   })
 
 
-  //Create a database for a project.
-  app.post("/create/database" , (req,res)=>
+  //_______________________MASTER TRANSACTIONS__________________________--
+  app.post("/add_db_to_a_project" , (req , res)=>
   {
+    //Get parameters from the api project_id and database name
+    const payLoad = req.body;
 
-    //TODO: Add functionality for db sanitization.
+    console.log(payLoad)
 
-    // Need to also login the project_id and user_id.
-    console.log("I got called");
-    const databaseName = req.body.databaseName;
+    const projectID = payLoad.projectID;
+    const database_name=payLoad.database_name;
 
-    console.log("The request was")
-    console.log(databaseName)
+    console.log('This is the params I got')
+    console.log(projectID , database_name);
 
-    query_and_param = queries.createDatabase(databaseName)
+   
 
-    console.log(query_and_param);
-    const query_sql = query_and_param.query;
-    const params = query_and_param.params;
-
-    connection.query(query_sql , params , (error , result)=>
+    connection.beginTransaction((err)=>
     {
-        if (error)
+        if (err)
         {
-            console.error("Error inserting in the database "+ error)
-            // Message sent upon variable
+            console.log("Encountered an error");
             res.status(500).json({error: "Failed to create user"});
             return;
+
+
         }
         
-        //Message sent when not created succesfully.
-        res.status(201).json({message:"Database created succesfully"});
-    });
+        //Start the queries. 
 
-    //Once db is created , you need to add db to project. 
-    //Need to send db_id as a repsonse message.
+        //1. Insert into db
+        const query_and_param = queries.createDatabase(database_name);
+
+        const query_sql = query_and_param.query;
+        const params = query_and_param.params;
+
+        console.log(query_sql , params);
+
+        connection.query(query_sql , params , (error, result1)=>
+        {
+            if (error)
+            {
+                console.log('Error executing query1: ' + error);
+                connection.rollback(()=>
+                {
+                    console.error('Transaction rolled back');
+
+
+                });
+                return;
+            }
+
+            //Get the result back form the query. 
+            //Get the database_id back
+            console.log(result1)
+            const database_id = result1.database_id;
+
+            console.log("This is the database id I got after the first query")
+            console.log(database_id)
+
+            //Insert into project id
+            const second_query_and_param = queries.createProjectDatabase(projectID , database_id);
+            const second_query = second_query_and_param.query;
+            const second_params= second_query_and_param.params;
+
+
+            //Execute second query
+            connection.query(second_query , second_params , (error , result2)=>
+            {
+                if (error)
+                {
+                    console.error("Error executing second query ")
+                    console.log(error)
+                    connection.rollback(()=>
+                    {
+                        connection.rollback(()=>
+                        {
+                            console.error('Transaction rolled back');
+                            res.status(500).json({ error: "Failed to create user" });
+
+                        });
+                        
+                    })
+                    return;
+
+                }
+
+                //No error. 
+                res.status(200).json("Transaction completed succesfully");
+
+
+
+            })
+            
+    
+        });
+
+
+
+
+    })
+
+    
+
+  
+
+
 
   })
+
+
+ 
 
   //Create a new user. 
   app.post("/create/newuser" , (req, res)=>
@@ -242,41 +317,6 @@ startServer().then(()=>
 
   })
 
-  //Add db to project. //Given the projectId and databaseId you can add things to there. 
-  app.post('/add_db_to_project' , (req, res)=>
-  {
-    const payload = req.body;
-
-    const projectID = payload.projectID 
-    const databaseId = payload.databaseId
-
-    query_and_param = queries.createProjectDatabase(projectID , databaseId)
-
-    const query_sql = query_and_param.query;
-    const params = query_and_param.params;
-
-    connection.query(query_sql , params , (error , result)=>
-    {
-        if (error)
-        {
-            console.error("Error adding database to the project"+ error)
-            // Message sent upon variable
-            res.status(500).json({error: "Failed to add database to the project"});
-            return;
-        }
-        
-        //Message sent when not created succesfully.
-        res.status(201).json({message:"Succesfully added database to the project"});
-    });
-
-
-
-
-
-
-
-
-  });
   
 
   //Generate api project.

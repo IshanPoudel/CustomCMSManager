@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 // Maybe need to do API calls at once and maintain ACID principles. 
 
 
-const url ='http://localhost:8000/add_db_to_project';
+const url ='http://localhost:8000/add_db_to_a_project';
 const data = {
     projectID: 1 , 
     databaseId : 1

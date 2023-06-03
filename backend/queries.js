@@ -34,10 +34,10 @@ const checkUserExistence = (username, email) => {
   };
   
   const createDatabase = (databaseName) => {
+    console.log(databaseName)
     const query = 'INSERT INTO databases_table (database_name) VALUES (?);';
     const params = [databaseName];
-    console.log("i got called from createDatabase")
-    console.log(query , params)
+    
     return { query, params };
   };
   
