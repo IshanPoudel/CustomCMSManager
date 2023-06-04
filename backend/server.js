@@ -138,7 +138,6 @@ startServer().then(()=>
         if (err)
         {
             console.log("Encountered an error");
-            res.status(500).json({error: "Failed to create user"});
             return;
 
 
@@ -162,6 +161,8 @@ startServer().then(()=>
                 connection.rollback(()=>
                 {
                     console.error('Transaction rolled back');
+                    res.status(500).json({ error: "Failed to create user" });
+
 
 
                 });
@@ -171,7 +172,7 @@ startServer().then(()=>
             //Get the result back form the query. 
             //Get the database_id back
             console.log(result1)
-            const database_id = result1.database_id;
+            const database_id = result1.insertId;
 
             console.log("This is the database id I got after the first query")
             console.log(database_id)
@@ -202,8 +203,28 @@ startServer().then(()=>
                     return;
 
                 }
+               
 
-                //No error. 
+                //No error, Final.
+
+                connection.commit((commitError)=>
+                {
+                    if (commitError)
+                    {
+                        console.error('Error comitting the transaction')
+                        connection.rollback(()=>
+                        {
+                            console.log('Transaction rolled back')
+                            res.status(500).json({error:'Failed to create user'});
+
+                        });
+                    }
+                    return;
+                })
+
+                 // Commit the transaction
+        
+
                 res.status(200).json("Transaction completed succesfully");
 
 

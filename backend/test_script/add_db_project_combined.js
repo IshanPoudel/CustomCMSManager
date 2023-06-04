@@ -7,7 +7,8 @@ const fetch = require("node-fetch");
 const url ='http://localhost:8000/add_db_to_a_project';
 const data = {
     projectID: 1 , 
-    database_name : 'Shopping Categories'
+    database_name : 'Rapid Transaction'
+
 
 };
 
