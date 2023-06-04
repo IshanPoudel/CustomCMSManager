@@ -251,9 +251,8 @@ startServer().then(()=>
 
 
  
-
   //Create a new user. 
-  app.post("/create/newuser" , (req, res)=>
+  app.post("/add_new_user" , (req, res)=>
   {
     console.log("New user got called");
 
@@ -342,7 +341,6 @@ startServer().then(()=>
 
 
   //Generate api and add to api_generator
-
   app.post('/add_api' , (req , res)=>
   {
 
@@ -480,64 +478,9 @@ startServer().then(()=>
 
   })
 
-  
-
-  //Generate api project 
-  app.post('/generate_api' , (req , res)=>
-  {
-    // We won't have everything in the request form , we would need to add generatedURL ourselves. 
-
-    // api_name , api_description, query , response_type , on_error_response , on_success_response
-    //get project_id , database_id , canned_query
-    const payload = req.body;
-
-    const api_name = payload.api_name;
-    const api_description = payload.api_description;
-    const query = payload.query;
-    const response_type = payload.response_type;
-    const on_error_response = payload.on_error_response;
-    const on_success_response = payload.on_success_response;
-    
-
-    //Find a way to generate a const API URL 
-    const api_url = 'localhost/add_user_id/project_id/db_id'
-   
-
-    query_and_param = queries.createAPI(api_name , api_description , query , response_type , on_error_response , on_success_response , api_url);
-
-    const query_sql = query_and_param.query;
-    const params = query_and_param.params;
-
-    console.log(query_sql , params)
-
-    connection.query(query_sql , params , (error , result)=>
-    {
-        if (error)
-        {
-            console.error("Error generating API"+ error)
-            // Message sent upon variable
-            res.status(500).json({error: "Failed to generate API"});
-            return;
-        }
-        
-        //Message sent when not created succesfully.
-        res.status(201).json({message:"Succesfully generated API"});
-    });
-
-    //Once you generate api , you need to add it to the api_database , use transactionl later on . 
-    //Also need to store the api_id that you get after the table has been created.
-    
-
-
-
-  }) 
-
-
-  
-
-
-
 });
+
+
 
 // At this point , our app should be listening. 
 

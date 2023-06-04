@@ -1,6 +1,7 @@
 //This adds an API and allows users to add it to the api_list table. 
 //Need to keep track of  project_id and database_id.
-//Also need to make sure that wrong users can't access it. 
+
+//------Important ---Also need to make sure that wrong users can't access it. 
 
 
 //Payload.
