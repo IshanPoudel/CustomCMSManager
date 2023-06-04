@@ -51,7 +51,7 @@ const checkUserExistence = (username, email) => {
 
   const addAPItoProject = (projectId , databaseId , apiId)=>
   {
-    const query = 'INSERT INTO api_generator(api_id , project_id , database_id) VALUES (? , ? , ? );';
+    const query = 'INSERT INTO api_list (api_id , project_id , database_id) VALUES (? , ? , ? );';
     const params = [apiId , projectId , databaseId]
     return {query , params};
   }

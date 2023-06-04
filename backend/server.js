@@ -118,6 +118,8 @@ startServer().then(()=>
 
 
   //_______________________MASTER TRANSACTIONS__________________________--
+
+  // Add a database to a project. Given a project add databases to it.
   app.post("/add_db_to_a_project" , (req , res)=>
   {
     //Get parameters from the api project_id and database name
@@ -338,9 +340,149 @@ startServer().then(()=>
 
   })
 
+
+  //Generate api and add to api_generator
+
+  app.post('/add_api' , (req , res)=>
+  {
+
+    console.log("I got called")
+
+    
+
+    //Get params. 
+    const payLoad = req.body;
+
+    const api_name = payLoad.api_name;
+    const api_description = payLoad.api_description;
+    const query_to_add = payLoad.query;
+    const response_type = payLoad.response_type;
+    const on_error_response = payLoad.on_error_response;
+    const on_success_response = payLoad.on_success_response;
+    const project_id = payLoad.project_id;
+    const database_id = payLoad.database_id;
+
+    //Need a way to generate a url
+    const generated_url = `${api_name}/${project_id}/${database_id}`
+
+    //Begin transaction. 
+
+    connection.beginTransaction((err)=>
+    {
+        if (err)
+        {
+            console.log("I encountered an error");
+        }
+
+
+        //First query . Add to api
+
+        const query_and_param = queries.createAPI(api_name , api_description , query_to_add , response_type , 
+            on_error_response , on_success_response , generated_url );
+        const first_query = query_and_param.query;
+        const first_param = query_and_param.params;
+
+        connection.query(first_query , first_param , (error , result1)=>
+        {
+            if (error)
+            {
+                console.error("Error executing query " + first_query );
+                connection.rollback(()=>
+                {
+                    console.error('Transaction rolled back');
+                    res.status(500).json({ error: "Failed to create api" });
+
+
+
+                });
+                
+                return;
+
+            }
+
+            //Get the result back from the second query
+            //Get api_id bacl
+            console.log('First query added');
+            const api_id = result1.insertId;
+
+
+            //Get the second query and param
+            const second_query_and_param =  queries.addAPItoProject( project_id , database_id , api_id);
+            const second_query = second_query_and_param.query;
+            const second_param = second_query_and_param.params;
+
+            //Start conection
+            console.log(second_query , second_param);
+
+            connection.query(second_query ,second_param , (error , result2)=>
+            {
+                if (error)
+                {
+                    console.error("Error executing second query " + error)
+                    connection.rollback(()=>
+                    {
+                        console.error('Transaction rolled back');
+                        res.status(500).json({ error: "Failed to create api" });
+
+
+
+                    });
+                    return;
+
+                }
+
+                //No error. Commit
+
+                connection.commit((commitError)=>
+                {
+                    if (commitError)
+                    {
+                        console.error('Error comitting the transaction')
+                        connection.rollback(()=>
+                        {
+                            console.log('Transaction rolled back')
+                            res.status(500).json({error:'Failed to create user'});
+
+                        });
+                    }
+                    
+                    
+                });
+
+                //Send succes message.
+
+                res.status(200).json("Transaction completed succesfully");
+
+
+
+
+
+
+            })
+
+
+
+            
+        })
+
+        
+
+
+
+
+
+
+        
+
+    }
+    )
+
+
+  })
+
   
 
-  //Generate api project.
+  //Generate api project 
   app.post('/generate_api' , (req , res)=>
   {
     // We won't have everything in the request form , we would need to add generatedURL ourselves. 

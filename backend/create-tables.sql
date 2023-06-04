@@ -60,7 +60,7 @@ CREATE TABLE api (
 
 
 -- api_generator table
-CREATE TABLE api_generator (
+CREATE TABLE api_list (
   api_id INT NOT NULL,
   project_id INT NOT NULL,
   database_id INT NOT NULL,
@@ -69,3 +69,4 @@ CREATE TABLE api_generator (
   FOREIGN KEY (database_id) REFERENCES project_database (id),
   FOREIGN KEY (api_id) REFERENCES api(api_id)
 );
+
