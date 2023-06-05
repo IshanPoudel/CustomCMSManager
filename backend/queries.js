@@ -16,8 +16,8 @@ const checkUserExistence = (username, email) => {
   };
   
   const loginUser = (usernameOrEmail, password) => {
-    const query = 'SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?;';
-    const params = [usernameOrEmail, usernameOrEmail, password];
+    const query = 'SELECT id FROM users WHERE username = ?  AND password = ?;';
+    const params = [usernameOrEmail, password];
     return { query, params };
   };
   
@@ -55,6 +55,15 @@ const checkUserExistence = (username, email) => {
     const params = [apiId , projectId , databaseId]
     return {query , params};
   }
+
+  // need a query to return all projects for a user. 
+  // For each project , need to return all databases. 
+  //Need to have api for creating each of the database  
+  // Need to think about separating it into two different databases. 
+  //I can have another database and direct queries there. 
+  //Need to call the database and go back to using main database or have a different route that I can use . 
+  //Once the db is added , I also need to create the database. Needs to be a transaction. 
+  //Get inside the database and create the tables.
 
   
   module.exports = {

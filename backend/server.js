@@ -7,7 +7,7 @@ const fs = require("fs");
 const mysql = require('mysql');
 const queries = require('./queries.js')
 
-
+const inidvidual_db_routes = require('./routes/individual_db_transactions.js');
 
 
 let connection=''
@@ -286,7 +286,7 @@ startServer().then(()=>
         {
             console.error("Error creating userName"+ error)
             // Message sent upon variable
-            res.status(500).json({error: "Failed to create user"});
+            res.status(500).json({error: "Failed to create user: Stack trace: " + error });
             return;
         }
         
@@ -477,6 +477,44 @@ startServer().then(()=>
 
 
   })
+
+
+  app.post('/check_user_login' , (req , res)=>
+  {
+    // run sql query and see if there is a 
+    const payLoad = req.body;
+
+    const username = payLoad.username;
+    const password = payLoad.password;
+
+    query_and_param = queries.loginUser(username , password);
+    first_query = query_and_param.query;
+    first_param = query_and_param.params;
+
+    connection.query(first_query , first_param ,  (error , result)=>
+    {
+        if (error)
+        {
+            console.log('Could not perform login. ');
+            res.status(500).json({error:"Failed to login user"});
+
+        }
+
+        if (result === null || result.length===0)
+        {
+            console.log("Password or email wrong.")
+            res.status(401).json({error:"Failed to login.Incorrect username or password." , user_id: '-1'});
+        }
+        else
+        {
+            console.log("User succesfully logged in. ")
+            res.status(200).json({message: 'User succesfully authenticated.' , user_id: result});
+
+        }
+    })
+  });
+
+
 
 });
 

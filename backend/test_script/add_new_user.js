@@ -6,8 +6,8 @@ const fetch = require('node-fetch');
 
 const url ='http://localhost:8000/add_new_user';
 const data = {
-    username:'Ishan' , 
-    email : 'shnpdl6@gmail.com' , 
+    username:'Aryan' , 
+    email : 'aryan6@gmail.com' , 
     password: 'password' 
 
 };

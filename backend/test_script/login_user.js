@@ -1,16 +1,10 @@
 const fetch = require('node-fetch');
 
 
-// Need to find a way to authenticate from the project_id and user_id
-// Maybe need to do API calls at once and maintain ACID principles. 
-
-//Get userID once you log in.
-
-const url ='http://localhost:8000/create_project';
+const url ='http://localhost:8000/check_user_login';
 const data = {
-    userID:'3' , 
-    projectName : 'E-commerce' , 
-    projectDescription: 'E-commerce website' 
+    username: 'Ishan',
+    password: 'passord'
 
 };
 

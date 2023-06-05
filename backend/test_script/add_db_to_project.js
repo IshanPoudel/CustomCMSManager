@@ -1,14 +1,14 @@
-const fetch = require('node-fetch');
+// Whenver I am adding to a database to a prokect
+// From the client, I need to call with the database_name and the project Id .
+//You also need to check if the username had access to the project - Security feature to be implemented later. 
 
-
-// Need to find a way to authenticate from the project_id and user_id
-// Maybe need to do API calls at once and maintain ACID principles. 
-
+const fetch = require("node-fetch");
 
 const url ='http://localhost:8000/add_db_to_a_project';
 const data = {
-    projectID: 1 , 
-    databaseId : 1
+    projectID: 4 , 
+    database_name : 'Regular inventory'
+
 
 };
 
@@ -28,4 +28,3 @@ fetch(url ,
         {
             console.log('Error' , error)
         });
-

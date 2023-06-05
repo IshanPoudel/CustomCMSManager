@@ -27,13 +27,13 @@ const fetch = require("node-fetch");
 const url ='http://localhost:8000/add_api';
 const data = {
     api_name : 'Second',
-    api_description: 'Rudimentary API',
+    api_description: 'Ecommerce API for fast',
     query : 'SELECT * FROM table',
     response_type : 'GET',
     on_error_response: 'No query failed.',
     on_success_response: "Yes this is the response.",
-    project_id : 1,
-    database_id : 1
+    project_id : 4,
+    database_id : 3
 
 
 };
