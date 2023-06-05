@@ -8,6 +8,7 @@ const mysql = require('mysql');
 const queries = require('./queries.js')
 
 const inidvidual_db_routes = require('./routes/individual_db_transactions.js');
+const { error } = require("console");
 
 
 let connection=''
@@ -93,7 +94,7 @@ const connectToSql = async()=>
             }
 
             console.log('Connected to the master_database ');
-            connection.query('USE main_database;');
+            
         })
     
 
@@ -123,6 +124,9 @@ startServer().then(()=>
   app.post("/add_db_to_a_project" , (req , res)=>
   {
     //Get parameters from the api project_id and database name
+
+
+    //Use main_database //Add databse to databases_table , add db_id to projects table , create the database. 
     const payLoad = req.body;
 
     console.log(payLoad)
@@ -133,7 +137,7 @@ startServer().then(()=>
     console.log('This is the params I got')
     console.log(projectID , database_name);
 
-   
+    connection.query('USE main_database;');
 
     connection.beginTransaction((err)=>
     {
@@ -152,6 +156,8 @@ startServer().then(()=>
 
         const query_sql = query_and_param.query;
         const params = query_and_param.params;
+        
+        
 
         console.log(query_sql , params);
 
@@ -205,30 +211,54 @@ startServer().then(()=>
                     return;
 
                 }
+
+                
+
+                connection.query(queries.initializeDatabase(database_name) , (error , result3)=>
+                {
+                    if (error)
+                    {
+                        console.error("Error executing second query ")
+                        console.log(error)
+                        connection.rollback(()=>
+                        {
+                            res.status(500).json({ error: "Failed to create database" });
+
+
+                        })
+                        return;
+
+                    }
+
+                    console.log("Database succesfully initialized.")
+
+                    connection.commit((commitError)=>
+                    {
+                        if (commitError)
+                        {
+                            console.error('Error comitting the transaction')
+                            connection.rollback(()=>
+                            {
+                                console.log('Transaction rolled back')
+                                res.status(500).json({error:'Failed to create user'});
+    
+                            });
+                        }
+                        return;
+                    })
+    
+                     // Commit the transaction
+            
+    
+                    res.status(200).json("Transaction completed succesfully");
+    
                
+                });
+                
 
                 //No error, Final.
 
-                connection.commit((commitError)=>
-                {
-                    if (commitError)
-                    {
-                        console.error('Error comitting the transaction')
-                        connection.rollback(()=>
-                        {
-                            console.log('Transaction rolled back')
-                            res.status(500).json({error:'Failed to create user'});
-
-                        });
-                    }
-                    return;
-                })
-
-                 // Commit the transaction
-        
-
-                res.status(200).json("Transaction completed succesfully");
-
+               
 
 
             })
@@ -280,6 +310,8 @@ startServer().then(()=>
     const query_sql = query_and_param.query;
     const params = query_and_param.params;
 
+    connection.query('USE main_database;');
+
     connection.query(query_sql , params , (error , result)=>
     {
         if (error)
@@ -317,6 +349,8 @@ startServer().then(()=>
 
     const query_sql = query_and_param.query;
     const params = query_and_param.params;
+
+    connection.query('USE main_database;');
 
     connection.query(query_sql , params , (error , result)=>
     {
@@ -364,6 +398,8 @@ startServer().then(()=>
     const generated_url = `${api_name}/${project_id}/${database_id}`
 
     //Begin transaction. 
+
+    connection.query('USE main_database;');
 
     connection.beginTransaction((err)=>
     {
@@ -491,6 +527,8 @@ startServer().then(()=>
     first_query = query_and_param.query;
     first_param = query_and_param.params;
 
+    connection.query('USE main_database;');
+
     connection.query(first_query , first_param ,  (error , result)=>
     {
         if (error)
@@ -513,8 +551,145 @@ startServer().then(()=>
         }
     })
   });
+   
+  //Get all the databases for a user and a project. 
+
+  app.post('/get_databases' , (req, res)=>
+  {
+    const payLoad = req.body;
+
+    const user_id = payLoad.userID;
+    const project_id = payLoad.projectID;
+
+    query_to_run = queries.getDatabases(project_id , user_id);
+    connection.query('USE main_database;')
+    connection.query(query_to_run , (error , result)=>
+    {
+        if (error)
+        {
+            console.log('Server error'+error);
+            res.status(201).json({error: 'Could not connect to server'});
+        }
+
+        // If not error , send the results back  
+
+        res.status(500).json({message: result})
+       
+    
+    })
+
+  });
+
+  app.post('/get_projects' , (req,res)=>
+  {
+
+    const payLoad = req.body;
+    const user_id = payLoad.userID
 
 
+    const query_to_run = queries.getProjects(user_id);
+
+    connection.query('USE main_database;')
+
+    connection.query(query_to_run , (error , result)=>
+    {
+        if (error)
+        {
+            console.log('Error fetching projects '+ error);
+            res.status(201).json({error: "Error fetching project"});
+
+        }
+
+        // #Send project_id_back. 
+        res.status(500).json({message: result});
+        console.log('Projects sent succesfully');
+
+    })
+
+
+  });
+
+
+  app.post('/get_tables' , (req, res)=>
+  {
+    const payLoad = req.body;
+    const database_name = payLoad.database_name;
+
+    
+
+    connection.query( `USE \`${database_name}\` `);
+    
+
+    const query_and_run  = 'SHOW TABLES;'
+
+    connection.query(query_and_run , (error, result)=>
+    {
+        if (error)
+        {
+            res.status(201).json({message:error})
+            return;
+        }
+
+        res.status(500).json({message: result});
+
+    });
+
+
+  })
+
+  app.post('/create_table' ,(req,res)=>
+  {
+    const payLoad = req.body;
+    const database_name = payLoad.database_name;
+    const query_to_run = payLoad.query_to_run;
+
+    
+
+    connection.query( `USE \`${database_name}\` `);
+
+    
+
+    connection.query(query_to_run , (error, result_to_send)=>
+    {
+        if (error)
+        {
+            res.status(201).json({message:error})
+            return;
+        }
+
+        res.status(500).json({message: 'Succesfully created table' , result:result_to_send});
+
+    });
+
+
+    
+  })
+
+  app.post('/run_queries_on_table' , (req , res)=>
+  {
+    const payLoad = req.body;
+    const database_name = payLoad.database_name;
+    const query_to_run = payLoad.query_to_run;
+
+    
+
+    connection.query( `USE \`${database_name}\` `);
+
+    
+
+    connection.query(query_to_run , (error, result_to_send)=>
+    {
+        if (error)
+        {
+            res.status(201).json({message:error})
+            return;
+        }
+
+        res.status(500).json({message: 'Succesfully ran the query' , result:result_to_send});
+
+    });
+
+  })
 
 });
 

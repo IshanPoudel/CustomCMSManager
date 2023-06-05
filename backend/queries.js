@@ -40,6 +40,16 @@ const checkUserExistence = (username, email) => {
     
     return { query, params };
   };
+
+
+  const initializeDatabase=(databaseName)=>
+  {
+    const query = `CREATE DATABASE \`${databaseName}\``;
+
+    
+
+    return query; 
+  }
   
   const createAPI = (api_name , api_description, query , response_type , on_error_response , on_success_response , generated_url) => {
     const sql_query = 'INSERT INTO api (api_name, api_description, query, response_type, on_error_response, on_success_response , generated_url ) VALUES (?, ?, ?, ?,? , ?,?);';
@@ -54,6 +64,28 @@ const checkUserExistence = (username, email) => {
     const query = 'INSERT INTO api_list (api_id , project_id , database_id) VALUES (? , ? , ? );';
     const params = [apiId , projectId , databaseId]
     return {query , params};
+  }
+
+  const getDatabases = (projectId, userId) => {
+    // For the user and the project, get all the databases
+  
+    const query = `
+      SELECT db.database_name
+      FROM databases_table AS db
+      JOIN project_database AS p_db ON p_db.database_id = db.database_id
+      JOIN projects AS p ON p.project_id = p_db.project_id
+      WHERE p_db.project_id = ${projectId}
+      AND p.user_id = ${userId};
+    `;
+  
+    return query;
+  };
+
+
+  const getProjects = (userId)=>
+  {
+    const query = `SELECT project_id , project_name FROM projects WHERE user_id=${userId};`
+    return query;
   }
 
   // need a query to return all projects for a user. 
@@ -73,6 +105,9 @@ const checkUserExistence = (username, email) => {
     createProject,
     createProjectDatabase,
     createDatabase,
+    initializeDatabase,
+    getDatabases,
+    getProjects,
     createAPI,
     addAPItoProject
   };

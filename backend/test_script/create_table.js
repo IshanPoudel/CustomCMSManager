@@ -1,13 +1,15 @@
-// Whenver I am adding to a database to a prokect
-// From the client, I need to call with the database_name and the project Id .
-//You also need to check if the username had access to the project - Security feature to be implemented later. 
+// Given a db name , create a table. 
+//For now just send the query
+//In client side add visualization for easy making of the tables. 
 
 const fetch = require("node-fetch");
 
-const url ='http://localhost:8000/add_db_to_a_project';
+const url ='http://localhost:8000/create_table';
 const data = {
-    projectID: 4 , 
-    database_name : 'Manga Sales'
+    
+    database_name : 'Manga Sales',
+    
+    query_to_run : 'CREATE TABLE author(one_line TEXT);'
 
 
 };

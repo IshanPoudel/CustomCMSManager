@@ -1,13 +1,9 @@
-// Whenver I am adding to a database to a prokect
-// From the client, I need to call with the database_name and the project Id .
-//You also need to check if the username had access to the project - Security feature to be implemented later. 
-
 const fetch = require("node-fetch");
 
-const url ='http://localhost:8000/add_db_to_a_project';
+const url ='http://localhost:8000/get_databases';
 const data = {
     projectID: 4 , 
-    database_name : 'Manga Sales'
+    userID: 3
 
 
 };
