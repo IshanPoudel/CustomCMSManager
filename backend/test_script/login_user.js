@@ -3,8 +3,8 @@ const fetch = require('node-fetch');
 
 const url ='http://localhost:8000/check_user_login';
 const data = {
-    username: 'Ishan',
-    password: 'passord'
+    username: 'JP',
+    password: 'JPMoran'
 
 };
 

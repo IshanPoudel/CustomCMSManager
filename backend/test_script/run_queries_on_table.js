@@ -16,9 +16,9 @@ const fetch = require("node-fetch");
 
 const url ='http://localhost:8000/run_queries_on_table';
 const data = {
-    database_name: 'Manga Sales',
-    table_name: 'author',
-    query_to_run: "INSERT INTO author (one_line) VALUES ('Eichiro ODA');",
+    database_name: 'Paintings to Ship',
+    table_name: 'Auctions',
+    query_to_run: "INSERT INTO Auctions (name , price , location) VALUES ('The Great Waves ' , '5000' , 'Dallas');",
   };
   
 

@@ -6,8 +6,8 @@ const fetch = require("node-fetch");
 
 const url ='http://localhost:8000/add_db_to_a_project';
 const data = {
-    projectID: 4 , 
-    database_name : 'Manga Sales'
+    projectID: 3 , 
+    database_name : 'England-India Test Matches 2022'
 
 
 };

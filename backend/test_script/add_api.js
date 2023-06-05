@@ -14,6 +14,7 @@
 // on_error_response
 // on_success_response
 
+//api_id:2
 
 //Need user_id, project_id , database_id tp add to api_list. 
 //Need to store user_id , project_id and database_id somewhere. 
@@ -26,15 +27,14 @@ const fetch = require("node-fetch");
 
 const url ='http://localhost:8000/add_api';
 const data = {
-    api_name : 'Second',
-    api_description: 'Ecommerce API for fast',
-    query : 'SELECT * FROM table',
+    api_name : 'See Auction Listings',
+    api_description: 'See all Auction Listings',
+    query : 'SELECT name FROM Auctions',
     response_type : 'GET',
     on_error_response: 'No query failed.',
     on_success_response: "Yes this is the response.",
-    project_id : 4,
-    database_id : 3
-
+    project_id : 1,
+    database_id : 2
 
 };
 

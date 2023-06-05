@@ -363,7 +363,7 @@ startServer().then(()=>
         }
         
         //Message sent when not created succesfully.
-        res.status(201).json({message:"Project created succesfully"});
+        res.status(201).json({message:"Project created succesfully" , id: result.insertId});
     });
 
 
@@ -485,7 +485,7 @@ startServer().then(()=>
 
                 //Send succes message.
 
-                res.status(200).json("Transaction completed succesfully");
+                res.status(200).json({api_id:api_id});
 
 
 

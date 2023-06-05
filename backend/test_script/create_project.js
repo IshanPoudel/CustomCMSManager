@@ -9,8 +9,8 @@ const fetch = require('node-fetch');
 const url ='http://localhost:8000/create_project';
 const data = {
     userID:'3' , 
-    projectName : 'E-commerce' , 
-    projectDescription: 'E-commerce website' 
+    projectName : 'Nike Shoe Sale Price' , 
+    projectDescription: 'Added distinct shoe sale price' 
 
 };
 

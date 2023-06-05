@@ -1,9 +1,12 @@
+// Get all the databases for theuser. 
+
 const fetch = require("node-fetch");
+
 
 const url ='http://localhost:8000/get_databases';
 const data = {
-    projectID: 4 , 
-    userID: 3
+    projectID: 3 , 
+    userID: 2
 
 
 };

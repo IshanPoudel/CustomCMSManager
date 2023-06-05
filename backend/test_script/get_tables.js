@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 const url ='http://localhost:8000/get_tables';
 const data = {
     
-    database_name : 'Manga Sales'
+    database_name : 'Paintings to Ship'
 
 
 };
