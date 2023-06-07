@@ -1,12 +1,20 @@
 // queries.js
 //Add abilities to preprocess the strings .
 
+const bcrypt = require('bcrypt')
+const saltRounds = 10
+
 const createNewUser = (username , email , password)=>
 {
-  const query= 'INSERT INTO users(username , email , password) VALUES (? , ? , ?)';
-  const params = [username , email , password];
 
-  return {query , params}
+  
+    const query= 'INSERT INTO users(username , email , password) VALUES (? , ? , ?)';
+    const params = [username , email , password];
+    return {query , params}
+
+  
+    
+  
 }
 
 const checkUserExistence = (username, email) => {
@@ -16,6 +24,9 @@ const checkUserExistence = (username, email) => {
   };
   
   const loginUser = (usernameOrEmail, password) => {
+
+    //Server side check to see if encryption service failed. 
+
     const query = 'SELECT id FROM users WHERE username = ?  AND password = ?;';
     const params = [usernameOrEmail, password];
     return { query, params };

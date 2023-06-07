@@ -9,6 +9,8 @@ const queries = require('./queries.js')
 
 const inidvidual_db_routes = require('./routes/individual_db_transactions.js');
 const { error } = require("console");
+const jwt = require ('jsonwebtoken');
+const { json } = require("body-parser");
 
 
 let connection=''
@@ -62,6 +64,12 @@ const connectToSql = async()=>
         
         // Start the server. 
         masterUser = JSON.parse(jsonData).master_user
+        
+        
+        
+        
+        jwt_access_token_secret = masterUser.access_token_secret
+        jwt_refresh_token_secret = masterUser.refresh_token_secret
 
         
 
@@ -306,9 +314,21 @@ startServer().then(()=>
 
     //Load query form queries.js
 
-    query_and_param = queries.createNewUser(username ,email , password)
+    query_and_param =  queries.createNewUser(username ,email , password)
+
+    console.log(query_and_param)
     const query_sql = query_and_param.query;
     const params = query_and_param.params;
+
+    console.log(query_sql , params)
+
+    
+
+    // // Check if password failed.
+    // if (params[2]==='')
+    // {
+    //     res.status(500).json({error:'Failed to create account. Try again'})
+    // }
 
     connection.query('USE main_database;');
 
@@ -527,6 +547,14 @@ startServer().then(()=>
     first_query = query_and_param.query;
     first_param = query_and_param.params;
 
+    console.log(first_query , first_param)
+
+    // if (first_param[1]==='')
+    // {
+    //     res.status(500).json({error:'Failed to create user'})
+    //     return;
+    // }
+
     connection.query('USE main_database;');
 
     connection.query(first_query , first_param ,  (error , result)=>
@@ -545,8 +573,11 @@ startServer().then(()=>
         }
         else
         {
+
+            const user = {name:username }
+            const accessToken = jwt.sign(user , jwt_access_token_secret )
             console.log("User succesfully logged in. ")
-            res.status(200).json({message: 'User succesfully authenticated.' , user_id: result});
+            res.status(200).json({message: 'User succesfully authenticated.' , user_id: result , accessToken : accessToken});
 
         }
     })
