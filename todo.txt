@@ -1,6 +1,30 @@
+tODO: Once an api is generated , have a function to deploy the api. 
+Work on frontend.
+
+
+
+
+
+Add api for loggin in
+Once you log in return the user_id
+Check for constrains make sure you can't access other peoples project_id. 
+Return databases for the project. (select all database_names for project_id so and so for user_id so and so)
+Return tables of a project. 
+Enumerate the tables for the project. 
+
+
+
+
+
+
 Add transactions while creating database and api
  Return ids in the request.
 Add tests for post requests. 
+
 Add apis for loading projects , databases and tables for a user. 
 Update the er Diagram
 TIMESTAMP
+
+
+Add transactions , once db is created get the db_id bacl
+Once you get the db_id back, use it to add to poster. 
