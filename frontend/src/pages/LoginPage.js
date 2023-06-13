@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Assuming you're using React Router for navigation
-
+import {useDispatch} from 'react-redux';
+import { login } from '../actions';
+import {useNavigate} from 'react-router-dom';
 
 const url ='http://localhost:8000/check_user_login';
 
@@ -11,6 +13,10 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [JWTtoken , setToken] = useState('');
+
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleuserNameChange = (e) => {
     setuserName(e.target.value);
@@ -49,6 +55,31 @@ const LoginPage = () => {
             .then(response=>response.json())
             .then(data=>{
                 console.log('Response' , data);
+                
+                //Check two things
+                //Check if wrong and set error message that is displayed in the dom
+                if (data.user_id == '-1')
+                {
+                  setError(data.error)
+                }
+
+                //Check if correct and set reducer
+                if (data.accessToken)
+                {
+                  // //Dispatch login
+                  // console.log(data.user_id[0].id)
+                  console.log(data)
+                  dispatch(login(data.user_id[0].id , data.accessToken , data.username))
+
+                   //Have them logged in and redirect to home page. 
+                   navigate('/');
+
+
+
+                  
+                }
+
+
             })
             .catch(error=>
                 {

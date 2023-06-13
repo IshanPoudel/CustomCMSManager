@@ -2,7 +2,10 @@
 
 
 const initialState = {
-    loggedIn:false
+    loggedIn:false,
+    userId : null,
+    token: null,
+    username:null,
 };
 
 function userReducer(state=initialState , action){
@@ -14,13 +17,19 @@ function userReducer(state=initialState , action){
       case 'LOGIN':
         return {
           ...state,
-          loggedIn:true
+          loggedIn:true ,
+          userId : action.payload.userId,
+          token: action.payload.token,
+          username: action.payload.username
         };
       
         case 'LOGOUT':
           return {
             ...state,
-            loggedIn:false
+            loggedIn:false,
+            userId : null ,
+            token : null,
+            username:null
           };
         default:
           return state;
