@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Assuming you're using React Router for navigation
 
+
+const url ='http://localhost:8000/check_user_login';
+
+
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [userName, setuserName] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [JWTtoken , setToken] = useState('');
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleuserNameChange = (e) => {
+    setuserName(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -22,12 +27,37 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (email === '' || password === '') {
+    if (userName === '' || password === '') {
       setError('Please enter your email and password.');
     } else {
       // Add your login logic here
-    }
-  };
+
+        const data = {
+            username: userName,
+            password: password
+        
+        };
+    
+        fetch(url , 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(data)
+            })
+            .then(response=>response.json())
+            .then(data=>{
+                console.log('Response' , data);
+            })
+            .catch(error=>
+                {
+                    console.log('Error' , error)
+                });
+         
+        }
+        //User succefully created , dispatch to store user token . 
+    };
 
   return (
     <div className="flex justify-center items-center h-screen bg-blue-100">
@@ -37,15 +67,15 @@ const LoginPage = () => {
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
+              Username
             </label>
             <input
               className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={handleEmailChange}
+              id="userName"
+              type="userName"
+              placeholder="Enter your user name"
+              value={userName}
+              onChange={handleuserNameChange}
             />
           </div>
           <div className="mb-4">
