@@ -118,6 +118,8 @@ const connectToSql = async()=>
 
 startServer().then(()=>
 {
+  //Added cors for api calls from different locations
+  app.use(cors());
   app.use(express.json());
 
   app.get("/" , (req , res)=>
