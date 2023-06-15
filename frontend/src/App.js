@@ -6,6 +6,7 @@ import Projects from './pages/Projects';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import Dashboard from './pages/Dashboard';
 
 
 const Layout = ()=>
@@ -48,6 +49,10 @@ const router = createBrowserRouter(
           element: <SignupPage/>
 
         },
+        {
+          path: "dashboard",
+          element: <Dashboard/>
+        }
       ]
     }
   ]
