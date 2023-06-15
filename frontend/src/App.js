@@ -6,7 +6,8 @@ import Projects from './pages/Projects';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './components/Dashboard';
+import StartingPage from './pages/StartingPage';
 
 
 const Layout = ()=>
@@ -51,7 +52,7 @@ const router = createBrowserRouter(
         },
         {
           path: "dashboard",
-          element: <Dashboard/>
+          element: <StartingPage/>
         }
       ]
     }
