@@ -72,7 +72,7 @@ const LoginPage = () => {
                   dispatch(login(data.user_id[0].id , data.accessToken , data.username))
 
                    //Have them logged in and redirect to home page. 
-                   navigate('/');
+                   navigate('/dashboard');
 
 
 

@@ -579,7 +579,7 @@ startServer().then(()=>
             const user = {name:username }
             const accessToken = jwt.sign(user , jwt_access_token_secret )
             console.log("User succesfully logged in. ")
-            res.status(200).json({message: 'User succesfully authenticated.' , user_id: result , accessToken : accessToken});
+            res.status(200).json({message: 'User succesfully authenticated.' , user_id: result , accessToken : accessToken , username:username});
 
         }
     })
@@ -594,6 +594,9 @@ startServer().then(()=>
     const user_id = payLoad.userID;
     const project_id = payLoad.projectID;
 
+    console.log('this is the request I got')
+    console.log(req.body)
+
     query_to_run = queries.getDatabases(project_id , user_id);
     connection.query('USE main_database;')
     connection.query(query_to_run , (error , result)=>
@@ -607,7 +610,7 @@ startServer().then(()=>
         // If not error , send the results back  
 
         res.status(500).json({message: result})
-       
+       console.log('Sent ' , result )
     
     })
 
@@ -723,6 +726,9 @@ startServer().then(()=>
     });
 
   })
+
+
+  
 
 });
 

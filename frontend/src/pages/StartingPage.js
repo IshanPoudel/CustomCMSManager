@@ -49,7 +49,7 @@ const StartingPage = () => {
         
         <div>Starting Page</div>
         <Dashboard projects_to_send = {projects}/>
-        <CreateProject/>
+        <CreateProject userId = {userState.userId}/>
 
     </div>
   )

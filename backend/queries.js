@@ -18,6 +18,7 @@ const createNewUser = (username , email , password)=>
 }
 
 const checkUserExistence = (username, email) => {
+  
     const query = 'SELECT COUNT(*) AS count FROM users WHERE username = ? OR email = ?;';
     const params = [username, email ];
     return { query, params };
@@ -81,7 +82,7 @@ const checkUserExistence = (username, email) => {
     // For the user and the project, get all the databases
   
     const query = `
-      SELECT db.database_name
+      SELECT  db.database_id ,db.database_name 
       FROM databases_table AS db
       JOIN project_database AS p_db ON p_db.database_id = db.database_id
       JOIN projects AS p ON p.project_id = p_db.project_id
@@ -95,7 +96,14 @@ const checkUserExistence = (username, email) => {
 
   const getProjects = (userId)=>
   {
-    const query = `SELECT project_id , project_name FROM projects WHERE user_id=${userId};`
+    const query = `SELECT project_id , project_name , project_description FROM projects WHERE user_id=${userId};`
+    return query;
+  }
+
+
+  const getTables = (databaseName)=>
+  {
+    const query = `SELECT table_name FROM information_schema.tables WHERE table_schema = ${databaseName};`
     return query;
   }
 

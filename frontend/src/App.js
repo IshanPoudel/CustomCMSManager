@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import Dashboard from './components/Dashboard';
 import StartingPage from './pages/StartingPage';
+import Databases from './pages/Databases';
 
 
 const Layout = ()=>
@@ -53,6 +54,16 @@ const router = createBrowserRouter(
         {
           path: "dashboard",
           element: <StartingPage/>
+        },
+        // Project/:id , for each project.
+        {
+          path: "/project/:id",
+          element: <Projects/>
+        },
+        //Database/:name , for each project. 
+        {
+          path: '/database/:name/',
+          element: <Databases/>
         }
       ]
     }

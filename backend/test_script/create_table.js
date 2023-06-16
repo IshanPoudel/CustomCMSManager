@@ -11,7 +11,7 @@ const data = {
 
     userId: 1,
     
-    database_name : 'Paintings to Ship',
+    database_name : 'Inventory',
     
     query_to_run : 'CREATE TABLE Auctions(name TEXT, price TEXT , location TEXT  );'
 
