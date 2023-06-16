@@ -648,6 +648,9 @@ startServer().then(()=>
 
   app.post('/get_tables' , (req, res)=>
   {
+
+    console.log('this is the req');
+    console.log(req.body)
     const payLoad = req.body;
     const database_name = payLoad.database_name;
 
@@ -667,6 +670,7 @@ startServer().then(()=>
         }
 
         res.status(500).json({message: result});
+        console.log(result)
 
     });
 
