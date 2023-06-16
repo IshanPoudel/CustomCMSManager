@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-const CreateTables = () => {
+const CreateTables = (props) => {
+
+  console.log(props)
   const [tableName, setTableName] = useState('');
   const [columns, setColumns] = useState([{ name: '', type: '', primaryKey: false, size: '' }]);
   const [errors, setErrors] = useState([]);
@@ -106,12 +108,30 @@ const CreateTables = () => {
   
       // TODO: Perform the API call or database operation to create the table
 
-      //Call api and create the query. Once query is created clear the forms. 
-      
+      // Call API and create the query. Once the query is created, clear the forms.
+      const url ='http://localhost:8000/create_table';
+      const data = {
+        userId: 1,
+        database_name: 'Inventory',
+        query_to_run: query
+      };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Response', data);
+        })
+        .catch(error => {
+          console.log('Error', error);
+        });
     }
   };
-  
-  
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -134,7 +154,9 @@ const CreateTables = () => {
           {errors.length > 0 && (
             <div className="mb-2">
               {errors.map((error, index) => (
-                <div key={index} className="text-sm text-red-500">{error}</div>
+                <div key={index} className="text-sm text-red-500">
+                  {error}
+                </div>
               ))}
             </div>
           )}
