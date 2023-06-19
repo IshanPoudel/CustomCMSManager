@@ -565,6 +565,7 @@ startServer().then(()=>
         {
             console.log('Could not perform login. ');
             res.status(500).json({error:"Failed to login user"});
+            return;
 
         }
 
@@ -572,6 +573,7 @@ startServer().then(()=>
         {
             console.log("Password or email wrong.")
             res.status(401).json({error:"Failed to login.Incorrect username or password." , user_id: '-1'});
+            return;
         }
         else
         {
