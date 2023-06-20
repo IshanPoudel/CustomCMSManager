@@ -9,6 +9,7 @@ import SignupPage from './pages/SignupPage';
 import Dashboard from './components/Dashboard';
 import StartingPage from './pages/StartingPage';
 import Databases from './pages/Databases';
+import Tables from './pages/Tables';
 
 
 const Layout = ()=>
@@ -64,7 +65,12 @@ const router = createBrowserRouter(
         {
           path: '/database/:name/',
           element: <Databases/>
-        }
+        },
+        // Table name: for each table
+        {
+          path: '/viewTable/:db_name/:table_name',
+          element: <Tables/>
+        },
       ]
     }
   ]

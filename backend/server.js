@@ -684,6 +684,9 @@ startServer().then(()=>
     const payLoad = req.body;
     const database_name = payLoad.database_name;
     const query_to_run = payLoad.query_to_run;
+    
+    console.log('/create_tables')
+    console.log(req.body)
 
     
 

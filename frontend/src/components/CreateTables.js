@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 
 const CreateTables = (props) => {
 
-  console.log(props)
+  console.log('This is the props I passed')
+  console.log(props.params)
+
+  const userId = props.params[1]
+  const db_name = props.params[0]
+
+  console.log(userId)
+  console.log(db_name)
+
   const [tableName, setTableName] = useState('');
   const [columns, setColumns] = useState([{ name: '', type: '', primaryKey: false, size: '' }]);
   const [errors, setErrors] = useState([]);
+  const [sucessMessage , setSucessMessage] = useState([]);
 
   const handleTableNameChange = (event) => {
     setTableName(event.target.value);
@@ -103,16 +112,18 @@ const CreateTables = (props) => {
   
       query = query.slice(0, -2);
       query += ');';
-  
+      
+      console.log("This is the query")
       console.log(query);
   
       // TODO: Perform the API call or database operation to create the table
 
       // Call API and create the query. Once the query is created, clear the forms.
+      // Get userId and database_name. 
       const url ='http://localhost:8000/create_table';
       const data = {
-        userId: 1,
-        database_name: 'Inventory',
+        userId: userId,
+        database_name: db_name,
         query_to_run: query
       };
 
@@ -126,6 +137,13 @@ const CreateTables = (props) => {
         .then(response => response.json())
         .then(data => {
           console.log('Response', data);
+          setSucessMessage(data.message);
+          setColumns([{ name: '', type: '', primaryKey: false, size: '' }]);
+          setErrors([]);
+
+          window.location.reload();
+
+
         })
         .catch(error => {
           console.log('Error', error);
@@ -136,6 +154,8 @@ const CreateTables = (props) => {
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-xl font-bold mb-4">Create Table</h2>
+      {setSucessMessage && <span className='text-black font-semibold'>{sucessMessage}</span>}
+
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="tableName" className="text-sm font-medium text-gray-700">
@@ -219,6 +239,7 @@ const CreateTables = (props) => {
           className="px-4 py-2 bg-indigo-500 text-white font-semibold rounded-md shadow-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           Create Table
+
         </button>
       </form>
     </div>
