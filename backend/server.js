@@ -716,6 +716,8 @@ startServer().then(()=>
     const database_name = payLoad.database_name;
     const query_to_run = payLoad.query_to_run;
 
+    console.log(req.body)
+
     
 
     connection.query( `USE \`${database_name}\` `);

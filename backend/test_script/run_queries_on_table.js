@@ -16,9 +16,9 @@ const fetch = require("node-fetch");
 
 const url ='http://localhost:8000/run_queries_on_table';
 const data = {
-    database_name: 'Paintings to Ship',
-    table_name: 'Ecommerce Project',
-    query_to_run: "INSERT INTO Auctions (name , price , location) VALUES ('The Great Waves ' , '5000' , 'Dallas');",
+    database_name: 'Ecommerce Project',
+    table_name: 'Auctions',
+    query_to_run: "SELECT * from Auctions;",
   };
   
 // 
