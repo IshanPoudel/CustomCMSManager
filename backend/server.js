@@ -732,16 +732,61 @@ startServer().then(()=>
             return;
         }
 
+        
+
         res.status(500).json({message: 'Succesfully ran the query' , result:result_to_send});
 
     });
 
   })
 
+  app.post('/select_from_table' , (req , res)=>
+  {
+
+    console.log(req.body)
+  
+    const payLoad = req.body;
+    const database_name = payLoad.database_name;
+    const table_name=payLoad.table_name;
+
+    const query_to_run = `SELECT * FROM \`${table_name}\`;`;
+  
+    console.log(req.body)
+  
+    
+  
+    connection.query( `USE \`${database_name}\` `);
+  
+    
+  
+    connection.query(query_to_run , (error, result_to_send)=>
+    {
+        if (error)
+        {
+            res.status(201).json({message:error})
+            return;
+        }
+
+        
+  
+        
+  
+        res.status(500).json({message: 'Succesfully ran the query' , result:result_to_send});
+  
+    });
+  
+  });
+  
+
 
   
 
 });
+
+
+
+
+
 
 
 
