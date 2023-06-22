@@ -740,42 +740,61 @@ startServer().then(()=>
 
   })
 
-  app.post('/select_from_table' , (req , res)=>
-  {
-
-    console.log(req.body)
+  app.post('/select_from_table', (req, res) => {
+    console.log(req.body);
   
     const payLoad = req.body;
     const database_name = payLoad.database_name;
-    const table_name=payLoad.table_name;
-
+    const table_name = payLoad.table_name;
+  
     const query_to_run = `SELECT * FROM \`${table_name}\`;`;
+    const query_to_get_primary_keys = `
+      SELECT COLUMN_NAME
+      FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+      WHERE TABLE_SCHEMA = '${database_name}'
+        AND TABLE_NAME = '${table_name}'
+        AND CONSTRAINT_NAME = 'PRIMARY';
+    `;
+    const query_to_get_column_names = `
+      SELECT COLUMN_NAME
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = '${database_name}'
+        AND TABLE_NAME = '${table_name}';
+    `;
   
-    console.log(req.body)
+    console.log(req.body);
   
-    
+    connection.query(`USE \`${database_name}\``);
   
-    connection.query( `USE \`${database_name}\` `);
+    connection.query(query_to_run, (error, result_to_send) => {
+      if (error) {
+        res.status(201).json({ message: error });
+        return;
+      }
   
-    
-  
-    connection.query(query_to_run , (error, result_to_send)=>
-    {
-        if (error)
-        {
-            res.status(201).json({message:error})
-            return;
+      connection.query(query_to_get_primary_keys, (error, primary_keys) => {
+        if (error) {
+          res.status(201).json({ message: error });
+          return;
         }
-
-        
   
-        
+        connection.query(query_to_get_column_names, (error, column_names) => {
+          if (error) {
+            res.status(201).json({ message: error });
+            return;
+          }
   
-        res.status(500).json({message: 'Succesfully ran the query' , result:result_to_send});
-  
+          res.status(200).json({
+            message: 'Successfully ran the query',
+            result: result_to_send,
+            primary_ids: primary_keys.map((row) => row.COLUMN_NAME),
+            column_names: column_names.map((row) => row.COLUMN_NAME),
+          });
+        });
+      });
     });
-  
   });
+  
   
 
 

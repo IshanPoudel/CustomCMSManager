@@ -17,7 +17,7 @@ const fetch = require("node-fetch");
 const url ='http://localhost:8000/select_from_table';
 const data = {
     database_name: 'Ecommerce Project',
-    table_name: 'Bills',
+    table_name: 'Auctions',
     query_to_run: "SELECT * from Auctions;",
   };
   
