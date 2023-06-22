@@ -57,43 +57,55 @@ const CreateTables = (props) => {
   const validateForm = () => {
     let formIsValid = true;
     const errors = [];
-
+    let hasPrimaryKey = false; // Flag to track if at least one primary key column exists
+  
     if (!tableName.trim()) {
       formIsValid = false;
       errors.push('Table name is required.');
     }
-
+  
     for (let i = 0; i < columns.length; i++) {
-      const { name, type } = columns[i];
-
+      const { name, type, primaryKey } = columns[i];
+  
       if (!name.trim() || !type.trim()) {
         formIsValid = false;
         errors.push('Column name and type are required for all columns.');
         break;
       }
-
+  
       if (!/^(INT|VARCHAR|TEXT)$/i.test(type)) {
         formIsValid = false;
         errors.push(`Invalid column type '${type}'. Only 'INT', 'VARCHAR', and 'TEXT' are allowed.`);
         break;
       }
-
+  
       if (type.toUpperCase() === 'VARCHAR' && !columns[i].size.trim()) {
         formIsValid = false;
         errors.push(`Size is required for 'VARCHAR' type.`);
         break;
       }
+  
+      if (primaryKey) {
+        hasPrimaryKey = true;
+      }
     }
-
+  
+    if (!hasPrimaryKey) {
+      formIsValid = false;
+      errors.push('At least one primary key column is required.');
+    }
+  
     setErrors(errors);
     return formIsValid;
   };
-
+  
   const handleSubmit = (event) => {
     event.preventDefault();
   
     if (validateForm()) {
       let query = `CREATE TABLE \`${tableName}\` (`;
+  
+      let primaryKeyCount = 0; // Counter for the number of primary key columns
   
       for (let i = 0; i < columns.length; i++) {
         const { name, type, primaryKey, size } = columns[i];
@@ -101,6 +113,7 @@ const CreateTables = (props) => {
   
         if (primaryKey) {
           columnDefinition += ' PRIMARY KEY';
+          primaryKeyCount++;
         }
   
         if (type.toUpperCase() === 'VARCHAR') {
@@ -110,46 +123,54 @@ const CreateTables = (props) => {
         query += `${columnDefinition}, `;
       }
   
+      // Check if there is at least one primary key column
+      if (primaryKeyCount === 0) {
+        setErrors(['At least one primary key column is required.']);
+        return;
+      }
+  
       query = query.slice(0, -2);
       query += ');';
-      
-      console.log("This is the query")
+  
+      console.log('This is the query');
       console.log(query);
   
       // TODO: Perform the API call or database operation to create the table
-
+  
       // Call API and create the query. Once the query is created, clear the forms.
-      // Get userId and database_name. 
-      const url ='http://localhost:8000/create_table';
+      // Get userId and database_name.
+      const url = 'http://localhost:8000/create_table';
       const data = {
         userId: userId,
         database_name: db_name,
-        query_to_run: query
+        query_to_run: query,
       };
-
+  
       fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       })
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           console.log('Response', data);
-          setSucessMessage(data.message);
+          setSucessMessage(data);
           setColumns([{ name: '', type: '', primaryKey: false, size: '' }]);
           setErrors([]);
-
+  
           window.location.reload();
-
-
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('Error', error);
         });
     }
   };
+  
+  
+
+
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
