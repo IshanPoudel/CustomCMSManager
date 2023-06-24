@@ -12,7 +12,9 @@ const CreateTables = (props) => {
   console.log(db_name)
 
   const [tableName, setTableName] = useState('');
-  const [columns, setColumns] = useState([{ name: '', type: '', primaryKey: false, size: '' }]);
+  const [columns, setColumns] = useState([
+    { name: '', type: '', primaryKey: false, size: '', autoIncrement: false }
+  ]);
   const [errors, setErrors] = useState([]);
   const [sucessMessage , setSucessMessage] = useState([]);
 
@@ -35,9 +37,16 @@ const CreateTables = (props) => {
   const handlePrimaryKeyChange = (event, index) => {
     const updatedColumns = [...columns];
     updatedColumns[index].primaryKey = event.target.checked;
+    
+    // Add auto increment attribute to the column if it's checked
+    if (event.target.checked) {
+      updatedColumns[index].autoIncrement = true;
+    } else {
+      delete updatedColumns[index].autoIncrement;
+    }
+    
     setColumns(updatedColumns);
   };
-
   const handleSizeChange = (event, index) => {
     const updatedColumns = [...columns];
     updatedColumns[index].size = event.target.value;
@@ -108,20 +117,25 @@ const CreateTables = (props) => {
       let primaryKeyCount = 0; // Counter for the number of primary key columns
   
       for (let i = 0; i < columns.length; i++) {
-        const { name, type, primaryKey, size } = columns[i];
+        const { name, type, primaryKey, size, autoIncrement } = columns[i];
         let columnDefinition = `\`${name}\` ${type}`;
-  
+        
         if (primaryKey) {
           columnDefinition += ' PRIMARY KEY';
           primaryKeyCount++;
         }
-  
+        
         if (type.toUpperCase() === 'VARCHAR') {
           columnDefinition += `(${size})`;
         }
-  
+        
+        if (autoIncrement) {
+          columnDefinition += ' AUTO_INCREMENT';
+        }
+        
         query += `${columnDefinition}, `;
       }
+      
   
       // Check if there is at least one primary key column
       if (primaryKeyCount === 0) {

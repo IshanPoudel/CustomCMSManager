@@ -716,7 +716,7 @@ startServer().then(()=>
     const database_name = payLoad.database_name;
     const query_to_run = payLoad.query_to_run;
 
-    console.log(req.body)
+    
 
     
 
@@ -741,7 +741,7 @@ startServer().then(()=>
   })
 
   app.post('/select_from_table', (req, res) => {
-    console.log(req.body);
+    
   
     const payLoad = req.body;
     const database_name = payLoad.database_name;
@@ -756,13 +756,12 @@ startServer().then(()=>
         AND CONSTRAINT_NAME = 'PRIMARY';
     `;
     const query_to_get_column_names = `
-      SELECT COLUMN_NAME
+      SELECT COLUMN_NAME , DATA_TYPE
       FROM INFORMATION_SCHEMA.COLUMNS
       WHERE TABLE_SCHEMA = '${database_name}'
         AND TABLE_NAME = '${table_name}';
     `;
   
-    console.log(req.body);
   
     connection.query(`USE \`${database_name}\``);
   
@@ -783,17 +782,74 @@ startServer().then(()=>
             res.status(201).json({ message: error });
             return;
           }
+
   
           res.status(200).json({
-            message: 'Successfully ran the query',
+            message: 'Successfully ran the query to fetch data',
             result: result_to_send,
             primary_ids: primary_keys.map((row) => row.COLUMN_NAME),
             column_names: column_names.map((row) => row.COLUMN_NAME),
+            column_type: column_names,
+
           });
         });
       });
     });
   });
+
+
+  app.post('/insert_into_table', (req, res) => {
+    console.log('Insert into table');
+    console.log(req.body);
+  
+    const payLoad = req.body;
+    const database_name = payLoad.database_name;
+    const table_name = payLoad.table_name;
+    const values = payLoad.values;
+  
+    const columns = Object.keys(values).join(', ');
+    const insertValues = Object.values(values)
+      .map((value) => {
+        if (typeof value === 'string') {
+          return `'${value}'`;
+        }
+        return value;
+      })
+      .join(', ');
+  
+    const query = `
+      INSERT INTO \`${table_name}\` (${columns})
+      VALUES (${insertValues});
+    `;
+
+
+    console.log('This is the query that is being sent')
+    console.log(query)
+  
+    connection.query(`USE \`${database_name}\``);
+  
+    connection.query(query, (error, result) => {
+      if (error) {
+        console.log('This is the query i am using')
+        res.status(500).json({ message: 'error'+error });
+        return;
+      }
+
+      console.log('I logged the next value ')
+  
+      res.status(200).json({
+        message: 'Successfully inserted the row',
+        result,
+      });
+
+
+    });
+
+    // res.status(200).json({
+    //     message: 'Successfully inserted the row'
+    //   });
+  });
+  
   
   
 
