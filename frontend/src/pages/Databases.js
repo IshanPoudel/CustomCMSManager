@@ -3,18 +3,13 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CreateTables from '../components/CreateTables';
 import { useNavigate } from 'react-router-dom';
-import {useHistory} from 'react-router-dom'
 
 const Databases = () => {
   const { name } = useParams();
   const userState = useSelector((store) => store.user);
 
   const [tables, setTables] = useState([]);
-
   const navigate = useNavigate();
-
-
-  
 
   const fetchTables = async () => {
     const url = 'http://localhost:8000/get_tables';
@@ -40,16 +35,15 @@ const Databases = () => {
     }
   };
 
-  const handleViewData = (table_name , db_name , event )=>
-  {
-    //Handle Tabelusing usenavigate
-    //  path: 'database/:name/:table_name',
+  const handleViewData = (table_name, db_name, event) => {
     event.preventDefault();
-    console.log('About to navigate to .')
-    navigate(`/viewTable/${db_name}/${table_name}` , {replace: true});
-    
+    console.log('About to navigate to .');
+    navigate(`/viewTable/${db_name}/${table_name}`, { replace: true });
+  };
 
-  }
+  const handleCreateAPI = () => {
+    navigate(`/createAPI/${name}`); // Replace '/createAPI' with the actual path of your CreateAPI page
+  };
 
   useEffect(() => {
     fetchTables();
@@ -72,15 +66,25 @@ const Databases = () => {
                 className="flex items-center mb-2 bg-white p-4 rounded-md shadow"
               >
                 <div className="mr-2">{table[Object.keys(table)[0]]}</div>
-                <button className="bg-green-500 text-white px-4 py-2 rounded-md" 
-                  onClick={ (event) =>{handleViewData(table[Object.keys(table)[0]] , name , event)}}
-                                >
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded-md"
+                  onClick={(event) =>
+                    handleViewData(table[Object.keys(table)[0]], name, event)
+                  }
+                >
                   View Data
                 </button>
               </div>
             ))}
           </div>
         )}
+
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
+          onClick={handleCreateAPI}
+        >
+          Create API
+        </button>
       </div>
     </div>
   );

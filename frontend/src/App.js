@@ -10,6 +10,7 @@ import Dashboard from './components/Dashboard';
 import StartingPage from './pages/StartingPage';
 import Databases from './pages/Databases';
 import Tables from './pages/Tables';
+import CreateAPI from './pages/CreateAPI';
 
 
 const Layout = ()=>
@@ -71,6 +72,10 @@ const router = createBrowserRouter(
           path: '/viewTable/:db_name/:table_name',
           element: <Tables/>
         },
+        {
+          path: '/createAPI/:db_name' , 
+          element: <CreateAPI/>
+        }
       ]
     }
   ]
