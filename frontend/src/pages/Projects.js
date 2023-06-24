@@ -50,11 +50,10 @@ const Projects = () => {
 
   
 
-  const handleViewTables = (databaseName) => {
+  const handleViewTables = (databaseName, projectId) => {
     // Add your logic to handle the "View Tables" button click for the specified database
-    console.log('View tables for:', databaseName);
-    navigate(`/database/${databaseName}`);
-
+    console.log('View tables for:', databaseName, 'in project:', projectId);
+    navigate(`/database/${databaseName}/${projectId}`);
   };
 
 
@@ -75,7 +74,7 @@ const Projects = () => {
             </div>
             <button
               className="bg-green-500 text-white rounded-lg px-4 py-2"
-              onClick={() => handleViewTables(database.database_name)}
+              onClick={() => handleViewTables(database.database_name , id)}
             >
               View Tables
             </button>

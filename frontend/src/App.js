@@ -64,7 +64,7 @@ const router = createBrowserRouter(
         },
         //Database/:name , for each project. 
         {
-          path: '/database/:name/',
+          path: '/database/:name/:projectID',
           element: <Databases/>
         },
         // Table name: for each table
@@ -73,7 +73,7 @@ const router = createBrowserRouter(
           element: <Tables/>
         },
         {
-          path: '/createAPI/:db_name' , 
+          path: '/createAPI/:projectID/:db_name' , 
           element: <CreateAPI/>
         }
       ]

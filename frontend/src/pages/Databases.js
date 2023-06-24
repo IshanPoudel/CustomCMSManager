@@ -5,7 +5,11 @@ import CreateTables from '../components/CreateTables';
 import { useNavigate } from 'react-router-dom';
 
 const Databases = () => {
-  const { name } = useParams();
+  const { name , projectID } = useParams();
+
+  console.log(name)
+  console.log(projectID)
+
   const userState = useSelector((store) => store.user);
 
   const [tables, setTables] = useState([]);
@@ -42,7 +46,7 @@ const Databases = () => {
   };
 
   const handleCreateAPI = () => {
-    navigate(`/createAPI/${name}`); // Replace '/createAPI' with the actual path of your CreateAPI page
+    navigate(`/createAPI/${projectID}/${name}/`); // Replace '/createAPI' with the actual path of your CreateAPI page
   };
 
   useEffect(() => {
