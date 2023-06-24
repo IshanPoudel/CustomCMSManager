@@ -746,6 +746,8 @@ startServer().then(()=>
     const payLoad = req.body;
     const database_name = payLoad.database_name;
     const table_name = payLoad.table_name;
+
+    console.log('I got called to select data from table')
   
     const query_to_run = `SELECT * FROM \`${table_name}\`;`;
     const query_to_get_primary_keys = `

@@ -259,30 +259,33 @@ const Tables = () => {
             <h3 className="text-xl font-bold mb-4">Add Row</h3>
             <div className="space-y-4">
               {columnNames.map((columnName) => (
-                <div key={columnName}>
-                  <label
-                    htmlFor={columnName}
-                    className="block font-medium text-gray-700"
-                  >
-                    {columnName}{' '}
-                    {primaryKeyColumns.includes(columnName) && (
-                      <span className="text-yellow-500">*</span>
+                !primaryKeyColumns.includes(columnName) && (
+                  <div key={columnName}>
+                    <label
+                      htmlFor={columnName}
+                      className="block font-medium text-gray-700"
+                    >
+                      {columnName}{' '}
+                      {primaryKeyColumns.includes(columnName) && (
+                        <span className="text-yellow-500">*</span>
+                      )}
+                    </label>
+                    <input
+                      type="text"
+                      id={columnName}
+                      name={columnName}
+                      className="border border-gray-300 px-3 py-2 rounded w-full"
+                      value={newRowData[columnName] || ''}
+                      onChange={handleInputChange}
+                    />
+                    {errorMessages[columnName] && (
+                      <p className="text-red-500">{errorMessages[columnName]}</p>
                     )}
-                  </label>
-                  <input
-                    type="text"
-                    id={columnName}
-                    name={columnName}
-                    className="border border-gray-300 px-3 py-2 rounded w-full"
-                    value={newRowData[columnName] || ''}
-                    onChange={handleInputChange}
-                  />
-                  {errorMessages[columnName] && (
-                    <p className="text-red-500">{errorMessages[columnName]}</p>
-                  )}
-                </div>
+                  </div>
+                )
               ))}
             </div>
+
             <div className="mt-4">
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
               {isSuccess && (
