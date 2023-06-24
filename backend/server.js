@@ -849,6 +849,35 @@ startServer().then(()=>
     //     message: 'Successfully inserted the row'
     //   });
   });
+
+  app.post('/delete_from_table' , (req , res)=>
+  {
+    console.log('About to delete from table')
+
+    const {deleteQuery} = req.body;
+
+    
+
+    // Execute the delete query
+    connection.query(deleteQuery, (error, results) => {
+
+        if (error) {
+            console.error('Error executing delete query:', error);
+            res.status(500).json({ success: false, message: 'Error deleting the row' });
+            return;
+        }
+    
+        // Check the affected rows to determine if the row was deleted successfully
+        if (results.affectedRows > 0) {
+            // Row deleted successfully
+            res.json({ success: true, message: 'Row deleted successfully' });
+        } else {
+            // Row not found or deletion was unsuccessful
+            res.status(404).json({ success: false, message: 'Row not found or deletion unsuccessful' });
+        }
+        });
+      
+  });
   
   
   

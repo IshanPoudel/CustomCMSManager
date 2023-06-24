@@ -9,10 +9,12 @@ const Tables = () => {
   const [primaryKeyColumns, setPrimaryKeyColumns] = useState([]);
   const [columnDataType, setColumnDataType] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newRowData, setNewRowData] = useState({});
   const [errorMessages, setErrorMessages] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [selectedRow, setSelectedRow] = useState({});
 
   const fetchTables = async () => {
     const url = 'http://localhost:8000/select_from_table';
@@ -63,6 +65,16 @@ const Tables = () => {
     setErrorMessage('');
   };
 
+  const openDeleteModal = (row) => {
+    setSelectedRow(row);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setSelectedRow({});
+    setIsDeleteModalOpen(false);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewRowData((prevData) => ({ ...prevData, [name]: value }));
@@ -71,60 +83,107 @@ const Tables = () => {
 
   const saveChanges = async () => {
     const url = 'http://localhost:8000/insert_into_table';
-  
+
     const columns = [];
     const values = [];
-  
+
     Object.entries(newRowData).forEach(([columnName, value]) => {
       if (!primaryKeyColumns.includes(columnName)) {
         columns.push(columnName);
         values.push(`'${value}'`);
       }
     });
-  
+
     const query = `INSERT INTO ${table_name} (${columns.join(', ')}) VALUES (${values.join(', ')});`;
-  
+
     const data = {
       database_name: db_name,
       table_name: table_name,
       values: newRowData, // Include the values object in the data
       query_to_run: query,
     };
-  
+
     const isEmpty = Object.values(newRowData).some((value) => value === '');
     if (isEmpty) {
       setErrorMessage('Please fill in all the fields.');
       return;
     }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+      console.log(responseData);
+
+      if (responseData.success) {
+        setIsSuccess(true);
+        setNewRowData({}); // Reset the newRowData state
+      } else {
+        setErrorMessage(responseData.message);
+      }
+
+      closeModal();
+      fetchTables();
+    } catch (error) {
+      console.log('Error:', error);
+      setErrorMessage('An error occurred while saving the row.');
+    }
+  };
+
+  const deleteRow = async () => {
+    // Check if there are primary key columns
+    if (primaryKeyColumns.length === 0) {
+      console.log('No primary key columns found.');
+      return;
+    }
+  
+    // Retrieve the primary key values from the selected row
+    const primaryKeyValues = primaryKeyColumns.map((column) => selectedRow[column]);
+  
+    // Generate the SQL query for deletion based on the primary key values
+    const tableName = table_name;
+    const primaryKeys = primaryKeyColumns.join(' AND ');
+    const deleteQuery = `DELETE FROM ${tableName} WHERE ${primaryKeys} = '${primaryKeyValues.join("' AND ")}';`;
+  
+    // Log the SQL query for debugging
+    console.log('Delete Query:', deleteQuery);
+  
+    const apiUrl = 'http://localhost:8000/delete_from_table'; // Replace with your actual API endpoint
   
     try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-    
-        const responseData = await response.json();
-        console.log(responseData);
-    
-        if (responseData.success) {
-          setIsSuccess(true);
-          setNewRowData({}); // Reset the newRowData state
-        } else {
-          setErrorMessage(responseData.message);
-        }
-    
-        closeModal();
-        fetchTables();
-      } catch (error) {
-        console.log('Error:', error);
-        setErrorMessage('An error occurred while saving the row.');
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ deleteQuery }),
+      });
+  
+      const responseData = await response.json();
+      console.log(responseData);
+  
+      // Handle the response from the API
+      if (responseData.success) {
+        // Row deleted successfully
+        closeDeleteModal();
+        fetchTables(); // Refresh the table data after deletion
+      } else {
+        // Error occurred while deleting the row
+        console.log(responseData.message);
+        // TODO: Handle the error response as needed
       }
+    } catch (error) {
+      console.log('Error:', error);
+      // TODO: Handle the error as needed
+    }
   };
   
-
   const getColumnDataType = (columnName) => {
     const column = columnDataType.find((col) => col.COLUMN_NAME === columnName);
     return column ? column.DATA_TYPE : '';
@@ -160,6 +219,12 @@ const Tables = () => {
                   )}
                 </th>
               ))}
+              <th
+                className="border px-4 py-2 bg-gray-200 font-medium text-gray-700"
+                style={{ minWidth: '80px' }}
+              >
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -173,6 +238,14 @@ const Tables = () => {
                     {record[columnName]}
                   </td>
                 ))}
+                <td className="border px-4 py-2">
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    onClick={() => openDeleteModal(record)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -180,81 +253,80 @@ const Tables = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow">
-            {isSuccess ? (
-              <div className="flex flex-col items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 text-green-500 mb-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 1a9 9 0 100 18A9 9 0 0010 1zm4.293 6.293a1 1 0 00-1.32-.083l-.094.083-4 4a1 1 0 001.32 1.497l.094-.083L11 10.414l3.293 3.293a1 1 0 001.32-1.497l-.094-.083-4-4a1 1 0 00-.083-1.32l.083-.094a1 1 0 011.32-.083l.094.083L11 8.586l3.293-3.293a1 1 0 00-.083-1.32l-.094-.083z"
-                    clipRule="evenodd"
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
+          <div className="bg-white rounded-lg p-4 max-w-md z-10">
+            <h3 className="text-xl font-bold mb-4">Add Row</h3>
+            <div className="space-y-4">
+              {columnNames.map((columnName) => (
+                <div key={columnName}>
+                  <label
+                    htmlFor={columnName}
+                    className="block font-medium text-gray-700"
+                  >
+                    {columnName}{' '}
+                    {primaryKeyColumns.includes(columnName) && (
+                      <span className="text-yellow-500">*</span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    id={columnName}
+                    name={columnName}
+                    className="border border-gray-300 px-3 py-2 rounded w-full"
+                    value={newRowData[columnName] || ''}
+                    onChange={handleInputChange}
                   />
-                </svg>
-                <p className="text-green-500 font-semibold">
-                  Row added successfully!
-                </p>
-                <button
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  onClick={closeModal}
-                >
-                  Close
-                </button>
-              </div>
-            ) : (
-              <>
-                <h2 className="text-lg font-bold mb-4">Add Row</h2>
-                {columnNames.map((columnName) => {
-                  if (!primaryKeyColumns.includes(columnName)) {
-                    return (
-                      <div className="mb-4" key={columnName}>
-                        <label className="text-gray-700 font-medium">
-                          {columnName}{' '}
-                          {primaryKeyColumns.includes(columnName) && (
-                            <span className="text-yellow-500">*</span>
-                          )}
-                        </label>
-                        <input
-                          type="text"
-                          name={columnName}
-                          className="border px-4 py-2 rounded w-full focus:outline-none focus:ring focus:border-blue-500"
-                          value={newRowData[columnName] || ''}
-                          onChange={handleInputChange}
-                        />
-                        {errorMessages[columnName] && (
-                          <p className="text-red-500 mt-1">
-                            {errorMessages[columnName]}
-                          </p>
-                        )}
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
-                {errorMessage && (
-                  <p className="text-red-500 mt-1">{errorMessage}</p>
-                )}
-                <div className="flex justify-end mt-4">
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    onClick={saveChanges}
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 ml-2"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </button>
+                  {errorMessages[columnName] && (
+                    <p className="text-red-500">{errorMessages[columnName]}</p>
+                  )}
                 </div>
-              </>
-            )}
+              ))}
+            </div>
+            <div className="mt-4">
+              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+              {isSuccess && (
+                <p className="text-green-500">Row added successfully.</p>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={saveChanges}
+              >
+                Save
+              </button>
+              <button
+                className="ml-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                onClick={closeModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-900 opacity-50"></div>
+          <div className="bg-white rounded-lg p-4 max-w-md z-10">
+            <h3 className="text-xl font-bold mb-4">Delete Row</h3>
+            <p className="mb-4">Are you sure you want to delete this row?</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={deleteRow}
+              >
+                Delete
+              </button>
+              <button
+                className="ml-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                onClick={closeDeleteModal}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
