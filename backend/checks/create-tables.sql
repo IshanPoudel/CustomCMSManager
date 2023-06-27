@@ -64,6 +64,7 @@ CREATE TABLE api_list (
   api_id INT NOT NULL,
   project_id INT NOT NULL,
   database_id INT NOT NULL,
+  active INT NOT NULL DEFAULT 0,
   
   FOREIGN KEY (project_id) REFERENCES projects (project_id),
   FOREIGN KEY (database_id) REFERENCES project_database (id),

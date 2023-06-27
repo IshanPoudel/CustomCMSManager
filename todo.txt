@@ -1,2 +1,2 @@
-Need to check userInput , for int field , I need an int input , for varchar , varchar input and so on. 
-Delete all user tables that were made prior to primary kye
+API table heandled. 
+Need to think of making the api endpoints.

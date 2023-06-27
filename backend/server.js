@@ -442,7 +442,8 @@ startServer().then(()=>
         {
             if (error)
             {
-                console.error("Error executing query " + first_query );
+                console.error("Error executing query: " + first_query );
+                console.error(error)
                 connection.rollback(()=>
                 {
                     console.error('Transaction rolled back');

@@ -3,12 +3,20 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CreateTables from '../components/CreateTables';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Databases = () => {
   const { name , projectID } = useParams();
 
   console.log(name)
   console.log(projectID)
+
+  const location = useLocation();
+
+  const receivedProps = location.state;
+  
+  console.log('This is what I passed in the state')
+  console.log(receivedProps);
 
   const userState = useSelector((store) => store.user);
 
@@ -46,7 +54,9 @@ const Databases = () => {
   };
 
   const handleCreateAPI = () => {
-    navigate(`/createAPI/${projectID}/${name}/`); // Replace '/createAPI' with the actual path of your CreateAPI page
+    navigate(`/createAPI/${projectID}/${name}/` , {state: {
+      database_id: receivedProps.database_id
+    }}); // Replace '/createAPI' with the actual path of your CreateAPI page
   };
 
   useEffect(() => {

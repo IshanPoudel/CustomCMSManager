@@ -30,6 +30,7 @@ const Projects = () => {
       
   
       const responseData = await response.json();
+      console.log('This are all the databases');
       console.log('Response:', responseData);
 
       setDatabases(responseData.message)
@@ -50,10 +51,10 @@ const Projects = () => {
 
   
 
-  const handleViewTables = (databaseName, projectId) => {
+  const handleViewTables = (databaseName, projectId , database_id ) => {
     // Add your logic to handle the "View Tables" button click for the specified database
     console.log('View tables for:', databaseName, 'in project:', projectId);
-    navigate(`/database/${databaseName}/${projectId}`);
+    navigate(`/database/${databaseName}/${projectId}` , {state: {database_id: database_id}});
   };
 
 
@@ -74,7 +75,7 @@ const Projects = () => {
             </div>
             <button
               className="bg-green-500 text-white rounded-lg px-4 py-2"
-              onClick={() => handleViewTables(database.database_name , id)}
+              onClick={() => handleViewTables(database.database_name , id , database.database_id)}
             >
               View Tables
             </button>
