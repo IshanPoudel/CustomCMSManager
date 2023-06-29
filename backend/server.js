@@ -115,15 +115,8 @@ const connectToSql = async()=>
     }
 }
 
-
-startServer().then(()=>
+const createDynamicAPIs = async()=>
 {
-  //Added cors for api calls from different locations
-  app.use(cors());
-  app.use(express.json());
-
-  
-
   connection.query('USE main_database;')
 
   const query_to_run = 'SELECT * FROM api;'
@@ -207,6 +200,20 @@ startServer().then(()=>
 
     
   });
+}
+
+
+startServer().then(()=>
+{
+  //Added cors for api calls from different locations
+  app.use(cors());
+  app.use(express.json());
+
+  createDynamicAPIs();
+
+  
+
+  
     
 
 });
