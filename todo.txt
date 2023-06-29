@@ -1,2 +1,7 @@
-API table heandled. 
-Need to think of making the api endpoints.
+Need to add security to api_endpoints so that only you can check it , maybe add some kind of passcode or token , that is for each users.  
+Also need to think about security , can't access other databases. 
+Also need to think about hosting it somewhere. 
+Better error handling.
+
+Create social media app with lots of users and transactions, use distributed systems ,to gain an understanding . 
+Ability to mass create ideas.

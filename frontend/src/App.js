@@ -11,6 +11,7 @@ import StartingPage from './pages/StartingPage';
 import Databases from './pages/Databases';
 import Tables from './pages/Tables';
 import CreateAPI from './pages/CreateAPI';
+import Ecommerce from './pages/Ecommerce';
 
 
 const Layout = ()=>
@@ -75,6 +76,10 @@ const router = createBrowserRouter(
         {
           path: '/createAPI/:projectID/:db_name' , 
           element: <CreateAPI/>
+        } , 
+        {
+          path: '/ecommerce' , 
+          element: <Ecommerce/>
         }
       ]
     }

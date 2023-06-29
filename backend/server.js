@@ -116,94 +116,93 @@ const connectToSql = async()=>
     }
 }
 
-const createDynamicAPIs = async()=>
-{
-  connection.query('USE main_database;')
+const createDynamicAPIs = async () => {
+  connection.query('USE main_database;');
 
-  const query_to_run = 'SELECT * FROM api;'
+  const query_to_run = 'SELECT * FROM api;';
 
-  connection.query(query_to_run , (error , result)=>{
-    if (error)
-    {
-        console.log('Error executing query1: ' + error);
-        return;
-
-
+  connection.query(query_to_run, (error, result) => {
+    if (error) {
+      console.log('Error executing query1: ' + error);
+      return;
     }
 
-    console.log('api');
-    console.log(result)
-
-    for (const row of result)
-    {
-
+    for (const row of result) {
       const {
-        generated_url , 
-        query , 
-        response_type , 
-        on_success_response , 
+        api_id,
+        generated_url,
+        query,
+        response_type,
+        on_success_response,
         on_error_response
       } = row;
 
-        //Print
-        // app[response_type.toLowerCase()](`/`)
+      console.log(generated_url);
 
-      console.log(generated_url)
-      
-      //Get database_name
-
-      const query_for_db = 'select dbt.database_name from databases_table as dbt JOIN api_list as ap ON ap.database_id = dbt.database_id WHERE ap.api_id = 1;'
-
-      // connection.query(query_for_db , (error , db_name)=>
-      // {
-      //   if(error)
-      //   {
-      //     console.log('Cant resolve dataabse name here');
-      //     return;
-      //   }
-
-
-      // })
-
-      
-
-      
-
-      app[response_type.toLowerCase()](`/${generated_url}` , (req , res)=>
-      {
-
+      app[response_type.toLowerCase()](`/${generated_url}`, (req, res) => {
         console.log('I got called');
-        
-        connection.query('USE Final;')
-        connection.query(query , (error , queryResults)=>
-        {
-          if (error)
-          {
-            console.error('Failed to execute query' , error);
-            const on_error_response = JSON.parse(on_error_response);
-            res.status(500).json(errorResponse);
-            return
+
+        const query_for_db = `SELECT dbt.database_name FROM databases_table AS dbt JOIN api_list AS ap ON ap.database_id = dbt.database_id WHERE ap.api_id = ${api_id};`;
+
+        connection.query(query_for_db, (error, db_name) => {
+          if (error) {
+            console.log('Can\'t resolve db_name while initializing API');
+            console.log(error);
+            return;
           }
 
-          const successResponse = JSON.parse(on_success_response);
-          const preparedResponse = successResponse.map(({ key, value }) => {
-            if (value === '$result') {
-              return { key, value: queryResults };
+          console.log(db_name[0].database_name);
+
+          const name_of_db = db_name[0].database_name;
+
+          connection.query(`USE ${name_of_db};`)
+
+          connection.query(query, (error, queryResults) => {
+            if (error) {
+              console.error('Failed to execute query', error);
+              const errorResponse = JSON.parse(on_error_response);
+            
+              const response_to_send = errorResponse.reduce((acc, { key, value }) => {
+                
+                acc[key] = value;
+                
+                return acc;
+              }, {});
+            
+              res.status(500).json(response_to_send);
+              return;
             }
-            return { key, value };
+            
+
+            const successResponse = JSON.parse(on_success_response);
+
+            const response_to_send = successResponse.reduce((acc, { key, value }) => {
+              if (value === '$result') {
+                acc['result'] = queryResults;
+              } else {
+                acc[key] = value;
+              }
+              return acc;
+            }, {});
+
+            console.log(response_to_send)
+
+            const preparedResponse = successResponse.map(({ key, value }) => {
+              if (value === '$result') {
+                return { key, value: queryResults };
+              }
+              return { key, value };
+            });
+
+            // res.json(preparedResponse);
+            res.json(response_to_send)
           });
-
-          
-  
-          res.json(preparedResponse);
-        })
-      })
+        });
+      });
     }
-
-
-    
   });
-}
+};
+
 
 
 startServer().then(()=>
