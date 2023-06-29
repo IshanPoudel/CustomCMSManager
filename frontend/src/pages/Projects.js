@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import store from '../redux/store';
 import CreateDatabases from '../components/CreateDatabases';
 import { useNavigate} from 'react-router-dom';
+// import { DisplayAPI } from '../components/DisplayAPI';
 
 const Projects = () => {
   const { id } = useParams();
@@ -85,6 +86,7 @@ const Projects = () => {
       )}
       <div className="border-2 border-gray-200 rounded-lg p-4 mb-4">
         <CreateDatabases payload={[parseInt(id), userState.userId]} />
+        {/* <DisplayAPI payload={[id]}/> */}
       </div>
     </div>
   );
