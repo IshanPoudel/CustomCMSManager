@@ -4,4 +4,18 @@ Also need to think about hosting it somewhere.
 Better error handling.
 
 Create social media app with lots of users and transactions, use distributed systems ,to gain an understanding . 
-Ability to mass create ideas.
+
+
+Things to do:
+Add dashboard
+Ability to delete stuff
+If error creating username send that .
+When create prokect , refresh to render project
+When creating database , refresh to render project. 
+Need to add foreign keys , add option to write sql query to create table. 
+
+Security:
+Need to do a lot of stuff. 
+Make sure others cant access your database
+When they are sending api response , don't allow them to send api repsonse.
+SQL Injection 

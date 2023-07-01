@@ -141,9 +141,12 @@ const createDynamicAPIs = async () => {
 
       app[response_type.toLowerCase()](`/${generated_url}`, (req, res) => {
         console.log('I got called');
+        console.log(`/${generated_url}`)
+
+
 
         const query_for_db = `SELECT dbt.database_name FROM databases_table AS dbt JOIN api_list AS ap ON ap.database_id = dbt.database_id WHERE ap.api_id = ${api_id};`;
-
+        connection.query('USE main_database;')
         connection.query(query_for_db, (error, db_name) => {
           if (error) {
             console.log('Can\'t resolve db_name while initializing API');
