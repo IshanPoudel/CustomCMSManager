@@ -4,13 +4,10 @@ const CreateProject = (props) => {
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleCreateProject = async (event) => {
     event.preventDefault();
-
-    console.log('I called the create Project API');
-    console.log(props);
-    console.log('ABC');
 
     // Make the API call to add the database
     const url = 'http://localhost:8000/create_project';
@@ -30,7 +27,6 @@ const CreateProject = (props) => {
       });
 
       const responseData = await response.json();
-      console.log('Response:', responseData);
 
       // Display success message
       if (responseData.message === 'Project created succesfully') {
@@ -39,10 +35,9 @@ const CreateProject = (props) => {
         setProjectName('');
         setProjectDescription('');
         props.onProjectCreated();
-        console.log('I created the')
-        // window.location.reload();
       } else {
         setSuccessMessage('');
+        setErrorMessage(responseData.error);
       }
     } catch (error) {
       console.log('Error:', error);
@@ -52,10 +47,12 @@ const CreateProject = (props) => {
   const isButtonDisabled = projectName === '' || projectDescription === '';
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Create Project</h2>
+    <div className="flex flex-col items-center justify-center">
+      <div className="bg-gray-200 p-4 mb-4">
+        <h2 className="text-3xl font-bold">Create Project</h2>
+      </div>
       <div className="mb-4">
-        <label htmlFor="projectName" className="text-black">
+        <label htmlFor="projectName" className="text-xl">
           Project Name:
         </label>
         <input
@@ -67,7 +64,7 @@ const CreateProject = (props) => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="projectDescription" className="text-black">
+        <label htmlFor="projectDescription" className="text-xl">
           Project Description:
         </label>
         <textarea
@@ -78,13 +75,14 @@ const CreateProject = (props) => {
         ></textarea>
       </div>
       <button
-        onClick={handleCreateProject} // Corrected here
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        onClick={handleCreateProject}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md font-bold hover:bg-blue-600"
         disabled={isButtonDisabled}
       >
         Create Project
       </button>
       {successMessage && <p className="text-black mt-4">{successMessage}</p>}
+      {errorMessage && <p className="text-red mt-4">{errorMessage}</p>}
     </div>
   );
 };

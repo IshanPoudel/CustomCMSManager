@@ -40,10 +40,15 @@ const StartingPage = () => {
     fetchProjects();
   };
 
+  const handleProjectDeleted = ()=>
+  {
+    fetchProjects();
+  }
+
   return (
     <div>
       <div>Starting Page</div>
-      <Dashboard projects_to_send={projects} />
+      <Dashboard projects_to_send={projects} onProjectDeleted={handleProjectDeleted} />
       <CreateProject userId={userState.userId} onProjectCreated={handleProjectCreated} />
     </div>
   );

@@ -93,6 +93,12 @@ const checkUserExistence = (username, email) => {
     return query;
   };
 
+  const deleteProject = (userId , projectId)=>
+  {
+    const query =`DELETE FROM projects where user_id = ${userId} and project_id = ${projectId}`;
+    return query;
+  }
+
 
   const getProjects = (userId)=>
   {
@@ -101,11 +107,15 @@ const checkUserExistence = (username, email) => {
   }
 
 
+
+
+
   const getTables = (databaseName)=>
   {
     const query = `SELECT table_name FROM information_schema.tables WHERE table_schema = ${databaseName};`
     return query;
   }
+
 
   // need a query to return all projects for a user. 
   // For each project , need to return all databases. 
@@ -128,6 +138,7 @@ const checkUserExistence = (username, email) => {
     getDatabases,
     getProjects,
     createAPI,
-    addAPItoProject
+    addAPItoProject,
+    deleteProject
   };
   

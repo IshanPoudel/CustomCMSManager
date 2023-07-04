@@ -443,45 +443,91 @@ startServer().then(()=>
   })
   
 
-//   Create a new project
-  app.post('/create_project' , (req , res)=>
-  {
-    console.log('I got called')
+  //   Create a new project
+  app.post('/create_project', (req, res) => {
+    console.log('I got called');
     const payload = req.body;
-    
-    //  Make sure to get userID from somewhere.
-    const userID= payload.userID ;
+    const userID = payload.userID;
     const projectName = payload.projectName;
     const projectDescription = payload.projectDescription;
-    
 
-    query_and_param = queries.createProject(userID , projectName , projectDescription)
+    query_and_param = queries.createProject(userID, projectName, projectDescription);
 
     const query_sql = query_and_param.query;
     const params = query_and_param.params;
 
     connection.query('USE main_database;');
+    connection.query(query_sql, params, (error, result) => {
+      if (error) {
+        console.error("Error creating project: " + error);
+        res.status(500).json({ error: "Failed to create project" });
+        return;
+      }
 
-    connection.query(query_sql , params , (error , result)=>
-    {
-        if (error)
-        {
-            console.error("Error creating project"+ error)
-            // Message sent upon variable
-            res.status(500).json({error: "Failed to create projectr"});
-            return;
+      const query_for_projects = queries.getProjects(userID);
+      connection.query('USE main_database');
+      console.log('Checking if project name already exists');
+      console.log(query_for_projects);
+      connection.query(query_for_projects, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ error: "Failed to create project" });
+          return;
         }
-        
-        //Message sent when not created succesfully.
-        res.status(201).json({message:"Project created succesfully" , id: result.insertId});
+
+        const project_name = params[1];
+        // console.log(project_name);
+        // console.log(result);
+
+        let exists = false;
+        result.forEach((row) => {
+          if (row.project_name && row.project_name.includes(project_name)) {
+            exists = true;
+            return;
+          }
+        });
+
+        if (exists) {
+          res.status(500).json({ error: "Project Name already exists" });
+          return;
+        }
+
+        res.status(201).json({ message: "Project created successfully", id: result.insertId });
+      });
     });
+  });
 
+  app.post('/delete_project' , (req,res)=>
+  {
+    console.log('Deleting projects')
+    console.log(req.body)
 
+    const payload = req.body
 
+    const userID = payload.userID;
+    const projectID = payload.projectID;
 
+    //Sanitize userID and projectID , we got them from react-redux 
+    //from the frontend but good to have additional redundancy
+    const query_and_param = queries.deleteProject(userID , projectID);
+
+    connection.query(query_and_param , (err , result)=>
+    {
+      if (err)
+      {
+        console.log(err)
+        res.status(500).json({error: 'Could not delete'})
+        return;
+      }
+
+      res.status(201).json({message: 'Succesful'});
+
+      
+    })
 
 
   })
+
 
 
   //Generate api and add to api_generator
