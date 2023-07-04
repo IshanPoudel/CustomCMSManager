@@ -1042,6 +1042,9 @@ startServer().then(()=>
     const database_name = payLoad.database_name;
     const query_to_run = payLoad.query_to_run;
 
+    console.log('/run_queries_on_table')
+    console.log(req.body)
+
     
 
     

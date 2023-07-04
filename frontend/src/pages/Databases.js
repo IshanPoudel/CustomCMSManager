@@ -47,6 +47,41 @@ const Databases = () => {
     }
   };
 
+  const runQueryonDatabase = async(table_name  ) =>
+  {
+
+    
+
+    
+    const url = 'http://localhost:8000/run_queries_on_table';
+    const data = {
+      database_name: name,
+      query_to_run : `DROP TABLE ${table_name};`
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const responseData = await response.json();
+      console.log('Response:', responseData);
+      fetchTables();
+
+      
+    } catch (error) {
+      console.log('Error in data', error);
+    }
+
+
+  }
+
+
+
   const handleViewData = (table_name, db_name, event) => {
     event.preventDefault();
     console.log('About to navigate to .');
@@ -88,6 +123,11 @@ const Databases = () => {
                 >
                   View Data
                 </button>
+                <button className="bg-red-500 text-white px-4 py-2 rounded-md"  
+                 onClick={(event) =>
+                  runQueryonDatabase(table[Object.keys(table)[0]])
+                }
+                >Drop</button>
               </div>
             ))}
           </div>
