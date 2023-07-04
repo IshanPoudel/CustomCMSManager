@@ -8,10 +8,12 @@ Create social media app with lots of users and transactions, use distributed sys
 
 Things to do:
 Add dashboard
-Ability to delete stuff
+Ability to delete stuff:
+ When creating projects-need to delete databases as well. 
 If error creating username send that .
 When create prokect , refresh to render project. - Done
 When creating database , refresh to render project.- Done. 
+Wehn creating tables , need to delete.-Done
 Need to add foreign keys , add option to write sql query to create table. 
 
 
@@ -23,4 +25,7 @@ Need to do a lot of stuff.
 Make sure others cant access your database. Key in db.
 When they are sending api response , don't allow them to send api repsonse.
 SQL Injection .
+
+One last thing:
+iF A database  EXISTS when creating one ,  don't add it to the user transaction problem.
 

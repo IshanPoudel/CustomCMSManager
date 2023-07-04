@@ -529,82 +529,107 @@ startServer().then(()=>
 
 
 
+  app.post('/delete_project', (req, res) => {
+    console.log('Deleting projects');
+    console.log(req.body);
   
-  app.post('/delete_project' , (req,res)=>
-  {
-    console.log('Deleting projects')
-    console.log(req.body)
-
-    const payload = req.body
-
+    const payload = req.body;
+  
     const userID = payload.userID;
     const projectID = payload.projectID;
-
-    //Sanitize userID and projectID , we got them from react-redux 
-    //from the frontend but good to have additional redundancy
-    const query_and_param = queries.deleteProject(userID , projectID);
-
-    //Get all databases for that project. 
-
-    const query_for_db = queries.getDatabases(projectID , userID);
-
-    //Get all the database names.
-
-    connection.query(query_for_db , (err , result)=>
-    {
-      if (err)
-      {
-        console.log(err)
-        res.status(500).json({error: 'Could not delete'})
+  
+    // Sanitize userID and projectID, we got them from react-redux
+    // from the frontend but good to have additional redundancy
+    const query_and_param = queries.deleteProject(userID, projectID);
+  
+    // Get all databases for that project.
+    const query_for_db = queries.getDatabases(projectID, userID);
+  
+    // Get all the database names.
+    connection.query(query_for_db, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Could not delete' });
         return;
-
       }
-
-      console.log('I am trying to get values')
-
-
-      //Get the value. 
-      const databaseNamestoDelete = result.map(row => row.database_name)
-      //Once the databaseName is deleted. 
-      //Use a transaction to delete all the databases. 
-      console.log(databaseNamestoDelete)
-
-      // Drop each database using map and connection.query
-      databaseNamestoDelete.forEach(databaseName => {
-      connection.query(`DROP DATABASE IF EXISTS ${databaseName}`, (error, result) => {
-        if (error) {
-          res.status(500).json({error:'Could not delete'})
-        } else {
-          console.log(`DELETED ${databaseName}`)
-        }
-      });
-
-
-      });
-
-      //Once dropped
-
-      connection.query(query_and_param , (err , result)=>
-      {
-        if (err)
-        {
-          console.log(err)
-          res.status(500).json({error: 'Could not delete'})
+  
+      console.log('I am trying to get all the databases in the project');
+      console.log(result);
+  
+      // Get the value.
+      const databaseNamestoDelete = result.map(row => row.database_name);
+      const databaseIDstoDelete = result.map(row => row.database_id);
+  
+      // Once the databaseName is deleted.
+      // Use a transaction to delete all the databases.
+      console.log(databaseNamestoDelete);
+  
+      // Recursive function to delete databases sequentially
+      function deleteDatabases(index) {
+        if (index >= databaseNamestoDelete.length) {
+          // All databases deleted, proceed to delete database IDs
+          deleteDatabaseIDs(0);
           return;
         }
-
-
-
-        res.status(201).json({message: 'Succesful'});
-
-        
-      })
-
-
-    })
-
-
+  
+        const databaseName = databaseNamestoDelete[index];
+        connection.query(`DROP DATABASE IF EXISTS \`${databaseName}\``, (error, result) => {
+          if (error) {
+            console.log(`Error deleting ${databaseName}`);
+          } else {
+            console.log(`Deleted ${databaseName}`);
+          }
+  
+          // Recursively call the function for the next database
+          deleteDatabases(index + 1);
+        });
+      }
+  
+      // Recursive function to delete database IDs sequentially
+      function deleteDatabaseIDs(index) {
+        if (index >= databaseIDstoDelete.length) {
+          // All database IDs deleted, proceed to delete the project
+          deleteProject();
+          return;
+        }
+  
+        const databaseID = databaseIDstoDelete[index];
+        connection.query(`DELETE FROM databases_table WHERE database_id = ${databaseID}`, (error, result) => {
+          if (error) {
+            console.log(`Error deleting database ID ${databaseID}`);
+          } else {
+            console.log(`Deleted database ID ${databaseID}`);
+          }
+  
+          // Recursively call the function for the next database ID
+          deleteDatabaseIDs(index + 1);
+        });
+      }
+  
+      // Function to delete the project
+      function deleteProject() {
+        connection.query(query_and_param, (err, result) => {
+          if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Could not delete' });
+          } else {
+            res.status(201).json({ message: 'Successful' });
+          }
+        });
+      }
+  
+      // Check if there are any databases to delete
+      if (databaseNamestoDelete.length === 0) {
+        // If no databases, directly remove the main db_id from databases_table
+        deleteProject();
+      } else {
+        // Start deleting the databases sequentially
+        console.log('About to delete databases');
+        deleteDatabases(0);
+      }
     });
+  });
+  
 
     
 
