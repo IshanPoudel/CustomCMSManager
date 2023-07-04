@@ -219,6 +219,73 @@ startServer().then(()=>
     //_______________________MASTER TRANSACTIONS__________________________--
 
   // Add a database to a project. Given a project add databases to it.
+
+
+  app.post('/delete_api' , (req,res)=>
+  {
+
+    
+
+    console.log('/delete_api')
+    console.log(req.body)
+
+    const payLoad = req.body;
+
+    console.log(payLoad);
+
+    const userID = payLoad.userID;
+    const projectID = payLoad.projectID;
+    const apiID = payLoad.apiID;
+
+    //Check if that exists. 
+
+    connection.query(`USE main_database`);
+
+    const query_for_validation = `select * from api_list ap JOIN projects p ON p.project_id = ap.project_id WHERE api_id = ${apiID} AND p.project_id=${projectID} and user_id=7;`
+
+    connection.query(query_for_validation , (error , result)=>
+    {
+      if (error)
+      {
+        console.log('Something wrong with server');
+        console.log(error)
+        res.status(500).json({error:error})
+      }
+      else
+      {
+        console.log(result)
+
+        //Check if result is empty. 
+
+        if (result === null)
+        {
+          res.status(500).json({error: 'Invalid authentication'});
+        }
+        else
+        {
+          //Can delete
+          connection.query(`delete from api where api_id =${apiID};` , (error , result)=>
+          {
+            if (error)
+            {
+              res.status(500).json({error: error})
+              return;
+            }
+            
+          })
+
+         
+          res.status(201).json({message: 'Succesfully deleted'});
+          return;
+            
+        }
+      }
+    })
+
+
+  })
+
+
   app.post("/add_db_to_a_project" , (req , res)=>
   {
     //Get parameters from the api project_id and database name
@@ -706,8 +773,6 @@ startServer().then(()=>
 
 
 
-
-
   //Generate api and add to api_generator
   app.post('/add_api' , (req , res)=>
   {
@@ -733,10 +798,11 @@ startServer().then(()=>
     const hash = crypto.createHash("md5").update(hashData).digest("hex");
 
     // Extract the first five letters of the hash
-    const shortenedHash = hash.substring(0, 5);
+    const shortenedHash = hash.substring(0, 10);
+    const api_name_extra_removed = String(api_name).replace(/[ %?/#&=+]/g, '_');
 
     // Construct the generated URL
-    const generated_url = `${shortenedHash}_${api_name}`;
+    const generated_url = `${api_name_extra_removed}_${shortenedHash}`;
 
     connection.query('USE main_database;');
 
@@ -976,7 +1042,7 @@ startServer().then(()=>
     const payLoad = req.body;
     const proejctID = payLoad.projectID;
 
-    const query_to_run = `select a.api_id ,a.api_name ,a.api_description from api as a JOIN api_list al on a.api_id = al.api_id WHERE al.project_id = ${proejctID};`
+    const query_to_run = `select a.api_id ,a.api_name ,a.api_description , a.generated_url , a.response_type , a.on_error_response ,a.on_success_response from api as a JOIN api_list al on a.api_id = al.api_id WHERE al.project_id = ${proejctID};`
 
     connection.query('USE main_database;')
 
@@ -992,6 +1058,7 @@ startServer().then(()=>
         // #Send project_id_back. 
         res.status(500).json({message: result});
         console.log('APIs sent succesfully');
+        console.log(result)
 
     })
 
