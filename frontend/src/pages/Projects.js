@@ -42,11 +42,60 @@ const Projects = () => {
   
      
   };
+
+  const handleDeleteDatabase = async(db_id)=>
+  {
+    const url = 'http://localhost:8000/delete_database';
+    const data = {
+        userID: userState.userId , 
+        projectID: id,
+        dbID:db_id,
+
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      
+  
+      const responseData = await response.json();
+      
+      console.log('Response:', responseData);
+
+      if (responseData.message==='Succesful')
+      {
+        fetchDatabases();
+      }
+
+      
+
+      
+    }catch(error)
+    {
+      console.log('Error in data')
+    }
+
+
+
+  }
   
 
   useEffect(() => {
     fetchDatabases();
   }, [id, userState.userId]);
+
+  const onDatabaseChange = ()=>
+  {
+    
+    fetchDatabases();
+  }
+
 
   
 
@@ -80,12 +129,17 @@ const Projects = () => {
             >
               View Tables
             </button>
+            <button 
+            className='bg-red-500 text-white rounded-lg px-4 py-2'
+            onClick={()=>handleDeleteDatabase(database.database_id)}>
+              Delete Table
+            </button>
             
           </div>
         ))
       )}
       <div className="border-2 border-gray-200 rounded-lg p-4 mb-4">
-        <CreateDatabases payload={[parseInt(id), userState.userId]} />
+        <CreateDatabases payload={[parseInt(id), userState.userId , onDatabaseChange ]} />
         {/* <DisplayAPI payload={[id]}/> */}
       </div>
     </div>

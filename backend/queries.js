@@ -99,6 +99,12 @@ const checkUserExistence = (username, email) => {
     return query;
   }
 
+  const deleteDatabase = (userId , projectId , dbID)=>
+  {
+    const query =`DELETE FROM project_database where project_id = ${projectId} and database_id = ${dbID}`;
+    return query;
+  }
+
 
   const getProjects = (userId)=>
   {
@@ -139,6 +145,7 @@ const checkUserExistence = (username, email) => {
     getProjects,
     createAPI,
     addAPItoProject,
-    deleteProject
+    deleteProject,
+    deleteDatabase
   };
   

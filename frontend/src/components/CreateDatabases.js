@@ -13,6 +13,8 @@ const CreateDatabases = (props) => {
   console.log('The projectID is');
   console.log(id);
 
+  
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -44,6 +46,9 @@ const CreateDatabases = (props) => {
         // Clear the form
         setDatabaseName('');
         setErrorMessage('');
+
+        //Call fetchDB , (through props so that we can rerender the db)
+        props.payload[2]();
       } else {
         setErrorMessage(responseData);
         setSuccessMessage('');

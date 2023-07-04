@@ -528,6 +528,40 @@ startServer().then(()=>
 
   })
 
+  app.post('/delete_database' , (req,res)=>
+  {
+    console.log('Deleting database')
+    console.log(req.body)
+
+    const payload = req.body
+
+    const userID = payload.userID;
+    const projectID = payload.projectID;
+    const dbID = payload.dbID;
+
+    //Sanitize userID and projectID , we got them from react-redux 
+    //from the frontend but good to have additional redundancy
+    const query_and_param = queries.deleteDatabase(userID , projectID , dbID);
+
+    connection.query(query_and_param , (err , result)=>
+    {
+      if (err)
+      {
+        console.log(err)
+        res.status(500).json({error: 'Could not delete'})
+        return;
+      }
+
+      res.status(201).json({message: 'Succesful'});
+
+      
+    })
+
+
+  })
+
+
+
 
 
   //Generate api and add to api_generator
