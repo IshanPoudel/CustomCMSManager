@@ -69,7 +69,11 @@ const CreateAPIForm = (props) => {
           .then(response=>response.json())
           .then(data=>{
             console.log('Response' , data);
-            setAPISuccessMessage(JSON.stringify(data));
+            if (data.api_id != null)
+            {
+              setAPISuccessMessage("Succesfully created API")
+            }
+            // setAPISuccessMessage(JSON.stringify(data));
 
             setTimeout(() => {
               setAPISuccessMessage(null);

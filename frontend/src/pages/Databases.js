@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CreateTables from '../components/CreateTables';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import DisplayAPI from '../components/DisplayAPI';
 
 const Databases = () => {
   const { name , projectID } = useParams();
@@ -105,6 +106,8 @@ const Databases = () => {
           <h1 className="text-3xl font-bold mb-4">Database Name: {name}</h1>
           <CreateTables params={[name, userState.userId]} />
         </div>
+
+        <DisplayAPI projectID={projectID}></DisplayAPI>
 
         {tables.length > 0 && (
           <div className="mt-4">
