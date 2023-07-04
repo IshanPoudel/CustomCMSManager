@@ -1,4 +1,3 @@
--- Master tables when starting the application for the first time.
 DROP DATABASE IF EXISTS main_database;
 CREATE DATABASE main_database;
 USE main_database;
@@ -21,7 +20,7 @@ CREATE TABLE projects (
   project_description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users (id)
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 -- databases table
@@ -37,8 +36,8 @@ CREATE TABLE project_database (
   database_id INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (project_id) REFERENCES projects (project_id),
-  FOREIGN KEY (database_id) REFERENCES databases_table (database_id)
+  FOREIGN KEY (project_id) REFERENCES projects (project_id) ON DELETE CASCADE,
+  FOREIGN KEY (database_id) REFERENCES databases_table (database_id) ON DELETE CASCADE
 );
 
 
@@ -66,8 +65,8 @@ CREATE TABLE api_list (
   database_id INT NOT NULL,
   active INT NOT NULL DEFAULT 0,
   
-  FOREIGN KEY (project_id) REFERENCES projects (project_id),
-  FOREIGN KEY (database_id) REFERENCES project_database (id),
-  FOREIGN KEY (api_id) REFERENCES api(api_id)
+  FOREIGN KEY (project_id) REFERENCES projects (project_id) ON DELETE CASCADE,
+  FOREIGN KEY (database_id) REFERENCES project_database (id) ON DELETE CASCADE,
+  FOREIGN KEY (api_id) REFERENCES api(api_id) ON DELETE CASCADE
 );
 

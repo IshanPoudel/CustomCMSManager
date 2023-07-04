@@ -10,6 +10,7 @@ const CreateProject = (props) => {
 
     console.log('I called the create Project API');
     console.log(props);
+    console.log('ABC');
 
     // Make the API call to add the database
     const url = 'http://localhost:8000/create_project';
@@ -32,11 +33,14 @@ const CreateProject = (props) => {
       console.log('Response:', responseData);
 
       // Display success message
-      if (responseData.message === 'Project created successfully') {
+      if (responseData.message === 'Project created succesfully') {
         setSuccessMessage('Project Successfully created');
         // Clear the form
         setProjectName('');
         setProjectDescription('');
+        props.onProjectCreated();
+        console.log('I created the')
+        // window.location.reload();
       } else {
         setSuccessMessage('');
       }
@@ -44,6 +48,8 @@ const CreateProject = (props) => {
       console.log('Error:', error);
     }
   };
+
+  const isButtonDisabled = projectName === '' || projectDescription === '';
 
   return (
     <div>
@@ -72,8 +78,9 @@ const CreateProject = (props) => {
         ></textarea>
       </div>
       <button
-        onClick={handleCreateProject}
+        onClick={handleCreateProject} // Corrected here
         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        disabled={isButtonDisabled}
       >
         Create Project
       </button>

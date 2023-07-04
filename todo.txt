@@ -14,8 +14,10 @@ When create prokect , refresh to render project
 When creating database , refresh to render project. 
 Need to add foreign keys , add option to write sql query to create table. 
 
+
 Security:
 Need to do a lot of stuff. 
-Make sure others cant access your database
+Make sure others cant access your database. Key in db.
 When they are sending api response , don't allow them to send api repsonse.
-SQL Injection 
+SQL Injection .
+
