@@ -443,7 +443,7 @@ startServer().then(()=>
   })
   
 
-  //   Create a new project
+  // //   Create a new project
   app.post('/create_project', (req, res) => {
     console.log('I got called');
     const payload = req.body;
@@ -457,46 +457,79 @@ startServer().then(()=>
     const params = query_and_param.params;
 
     connection.query('USE main_database;');
-    connection.query(query_sql, params, (error, result) => {
+
+    //Check if project already exists
+    const query_for_projects = queries.getProjects(userID);
+
+    connection.query('USE main_database');
+    console.log('Checking if project name already exists');
+    console.log(query_for_projects);
+
+
+    connection.query(query_for_projects, (error, result) => {
       if (error) {
-        console.error("Error creating project: " + error);
+        console.log(error);
         res.status(500).json({ error: "Failed to create project" });
         return;
       }
 
-      const query_for_projects = queries.getProjects(userID);
-      connection.query('USE main_database');
-      console.log('Checking if project name already exists');
-      console.log(query_for_projects);
-      connection.query(query_for_projects, (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ error: "Failed to create project" });
+      const project_name = params[1];
+
+      console.log('Checking if the project is already in the table')
+      console.log(project_name);
+      // console.log(result);
+
+      let exists = false;
+      result.forEach((row) => {
+        if (row.project_name && row.project_name.includes(project_name)) {
+          exists = true;
           return;
         }
+      });
 
-        const project_name = params[1];
-        // console.log(project_name);
-        // console.log(result);
+      if (exists) {
+        res.status(500).json({ error: "Project Name already exists" });
+        return;
+      }
 
-        let exists = false;
-        result.forEach((row) => {
-          if (row.project_name && row.project_name.includes(project_name)) {
-            exists = true;
+
+      else
+      {
+             //Actually create the project   
+        connection.query(query_sql, params, (error, result) => {
+          if (error) {
+            console.error("Error creating project: " + error);
+            res.status(500).json({ error: "Failed to create project" });
             return;
           }
+
+          console.log('Sending this value')
+
+          res.status(201).json({message: 'Project created succesfully'})
+
+
         });
 
-        if (exists) {
-          res.status(500).json({ error: "Project Name already exists" });
-          return;
-        }
+      }
 
-        res.status(201).json({ message: "Project created successfully", id: result.insertId });
-      });
+
+
     });
+
+
+
+     
+
+
+
   });
 
+  // Create a new project
+  // Create a new project
+
+
+
+  
   app.post('/delete_project' , (req,res)=>
   {
     console.log('Deleting projects')
