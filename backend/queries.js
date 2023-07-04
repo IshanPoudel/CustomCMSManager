@@ -101,8 +101,11 @@ const checkUserExistence = (username, email) => {
 
   const deleteDatabase = (userId , projectId , dbID)=>
   {
-    const query =`DELETE FROM project_database where project_id = ${projectId} and database_id = ${dbID}`;
-    return query;
+    const query_for_checking = `select * FROM project_database where project_id = ${projectId} and database_id = ${dbID}`;
+    const query_for_getting_db_name =`SELECT database_name from databases_table where database_id = ${dbID}`;
+    const query_for_delete =`DELETE FROM databases_table where  database_id = ${dbID}`;
+
+    return {query_for_checking , query_for_getting_db_name , query_for_delete};
   }
 
 

@@ -8,7 +8,7 @@ const mysql = require('mysql');
 const queries = require('./queries.js')
 
 const inidvidual_db_routes = require('./routes/individual_db_transactions.js');
-const { error } = require("console");
+const { error, Console } = require("console");
 const jwt = require ('jsonwebtoken');
 const { json } = require("body-parser");
 const crypto = require('crypto');
@@ -511,22 +511,69 @@ startServer().then(()=>
     //from the frontend but good to have additional redundancy
     const query_and_param = queries.deleteProject(userID , projectID);
 
-    connection.query(query_and_param , (err , result)=>
+    //Get all databases for that project. 
+
+    const query_for_db = queries.getDatabases(projectID , userID);
+
+    //Get all the database names.
+
+    connection.query(query_for_db , (err , result)=>
     {
       if (err)
       {
         console.log(err)
         res.status(500).json({error: 'Could not delete'})
         return;
+
       }
 
-      res.status(201).json({message: 'Succesful'});
+      console.log('I am trying to get values')
 
-      
+
+      //Get the value. 
+      const databaseNamestoDelete = result.map(row => row.database_name)
+      //Once the databaseName is deleted. 
+      //Use a transaction to delete all the databases. 
+      console.log(databaseNamestoDelete)
+
+      // Drop each database using map and connection.query
+      databaseNamestoDelete.forEach(databaseName => {
+      connection.query(`DROP DATABASE IF EXISTS ${databaseName}`, (error, result) => {
+        if (error) {
+          res.status(500).json({error:'Could not delete'})
+        } else {
+          console.log(`DELETED ${databaseName}`)
+        }
+      });
+
+
+      });
+
+      //Once dropped
+
+      connection.query(query_and_param , (err , result)=>
+      {
+        if (err)
+        {
+          console.log(err)
+          res.status(500).json({error: 'Could not delete'})
+          return;
+        }
+
+
+
+        res.status(201).json({message: 'Succesful'});
+
+        
+      })
+
+
     })
 
 
-  })
+    });
+
+    
 
   app.post('/delete_database' , (req,res)=>
   {
@@ -541,9 +588,21 @@ startServer().then(()=>
 
     //Sanitize userID and projectID , we got them from react-redux 
     //from the frontend but good to have additional redundancy
-    const query_and_param = queries.deleteDatabase(userID , projectID , dbID);
+    const {query_for_checking ,  query_for_getting_db_name , query_for_delete} = queries.deleteDatabase(userID , projectID , dbID);
 
-    connection.query(query_and_param , (err , result)=>
+    console.log(query_for_checking , query_for_getting_db_name , query_for_delete)
+
+    console.log(query_for_checking)
+
+    
+
+    //Before deleting get the database_name
+
+    
+
+    
+
+    connection.query(query_for_getting_db_name , (err , result)=>
     {
       if (err)
       {
@@ -552,7 +611,34 @@ startServer().then(()=>
         return;
       }
 
-      res.status(201).json({message: 'Succesful'});
+      //Check if that project_id and dataabse id exists. 
+
+      console.log(result)
+
+      const database_name_to_delete = result[0].database_name;
+      
+
+      //Remove from database table
+      connection.query(query_for_delete , (err , result)=>{
+        if (err)
+        {
+          console.log(err)
+          res.status(500).json({error:'Could not delete'})
+          return;
+        }
+
+        //Now drop the actual database
+
+        connection.query(`DROP DATABASE ${database_name_to_delete}`)
+        res.status(201).json({message: 'Succesful'});
+
+
+      })
+      
+
+
+      
+
 
       
     })
