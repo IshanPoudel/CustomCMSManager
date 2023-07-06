@@ -117,6 +117,8 @@ const connectToSql = async()=>
 }
 
 const createDynamicAPIs = async () => {
+
+  console.log("I got called")
   connection.query('USE main_database;');
 
   const query_to_run = 'SELECT * FROM api;';
@@ -138,9 +140,10 @@ const createDynamicAPIs = async () => {
       } = row;
 
       console.log(generated_url);
+      console.log(api_id)
 
       app[response_type.toLowerCase()](`/${generated_url}`, (req, res) => {
-        console.log('I got called');
+        console.log('This dynamic api got called');
         console.log(`/${generated_url}`)
 
 
@@ -153,7 +156,8 @@ const createDynamicAPIs = async () => {
             console.log(error);
             return;
           }
-
+          
+          console.log(db_name)
           console.log(db_name[0].database_name);
 
           const name_of_db = db_name[0].database_name;
@@ -892,6 +896,8 @@ startServer().then(()=>
                 //Send succes message.
 
                 res.status(200).json({api_id:api_id});
+                //Restart all dynamic apis.
+                createDynamicAPIs();
 
 
 
@@ -941,6 +947,8 @@ startServer().then(()=>
     //     return;
     // }
 
+
+
     connection.query('USE main_database;');
 
     connection.query(first_query , first_param ,  (error , result)=>
@@ -948,6 +956,7 @@ startServer().then(()=>
         if (error)
         {
             console.log('Could not perform login. ');
+            console.log(error)
             res.status(500).json({error:"Failed to login user"});
             return;
 

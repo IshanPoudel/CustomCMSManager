@@ -11,7 +11,7 @@ Add dashboard
 Ability to delete stuff:
  When creating projects-need to delete databases as well. 
 If error creating username send that .
-When create prokect , refresh to render project. - Done
+When create project , refresh to render project. - Done
 When creating database , refresh to render project.- Done. 
 Wehn creating tables , need to delete.-Done
 Need to add foreign keys , add option to write sql query to create table. 
@@ -28,4 +28,11 @@ SQL Injection .
 
 One last thing:
 iF A database  EXISTS when creating one ,  don't add it to the user transaction problem.
+Have an api_page. 
+
+
+
+    toDO:
+    WHEN A NEW API IS ADDED , REFresh : IF I REFRESH WILL THE JIT TOKEN BE DIFFERENT?
+    
 
