@@ -16,7 +16,7 @@ const Dashboard = ({ projects_to_send, onProjectDeleted }) => {
   };
 
   const handleDeleteProject = async (projectId) => {
-    const url = 'http://localhost:8000/delete_project';
+    const url = 'http://18.224.15.185:8000/delete_project';
     const data = {
       userID: userState.userId,
       projectID: projectId,

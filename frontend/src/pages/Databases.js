@@ -25,7 +25,7 @@ const Databases = () => {
   const navigate = useNavigate();
 
   const fetchTables = async () => {
-    const url = 'http://localhost:8000/get_tables';
+    const url = 'http://18.224.15.185:8000/get_tables';
     const data = {
       database_name: name
     };
@@ -54,7 +54,7 @@ const Databases = () => {
     
 
     
-    const url = 'http://localhost:8000/run_queries_on_table';
+    const url = 'http://18.224.15.185:8000/run_queries_on_table';
     const data = {
       database_name: name,
       query_to_run : `DROP TABLE ${table_name};`

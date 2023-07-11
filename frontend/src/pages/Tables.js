@@ -17,7 +17,7 @@ const Tables = () => {
   const [selectedRow, setSelectedRow] = useState({});
 
   const fetchTables = async () => {
-    const url = 'http://localhost:8000/select_from_table';
+    const url = 'http://18.224.15.185:8000/select_from_table';
     const data = {
       database_name: db_name,
       table_name: table_name,
@@ -82,7 +82,7 @@ const Tables = () => {
   };
 
   const saveChanges = async () => {
-    const url = 'http://localhost:8000/insert_into_table';
+    const url = 'http://18.224.15.185:8000/insert_into_table';
 
     const columns = [];
     const values = [];
@@ -154,7 +154,7 @@ const Tables = () => {
     // Log the SQL query for debugging
     console.log('Delete Query:', deleteQuery);
   
-    const apiUrl = 'http://localhost:8000/delete_from_table'; // Replace with your actual API endpoint
+    const apiUrl = 'http://18.224.15.185:8000/delete_from_table'; // Replace with your actual API endpoint
   
     try {
       const response = await fetch(apiUrl, {

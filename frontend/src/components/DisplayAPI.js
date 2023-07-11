@@ -15,7 +15,7 @@ const DisplayAPI = ({ projectID }) => {
 
   const fetchAPIData = async () => {
     try {
-      const response = await fetch('http://localhost:8000/get_apis', {
+      const response = await fetch('http://18.224.15.185:8000/get_apis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const DisplayAPI = ({ projectID }) => {
   // const handleDelete = async(apiID) =>
   // {
 
-  //   const url = 'http://localhost:8000/delete_api';
+  //   const url = 'http://18.224.15.185:8000/delete_api';
   //   const data = {
   //     userID: userState.userId ,
   //     projectID: projectID , 
@@ -88,7 +88,7 @@ const DisplayAPI = ({ projectID }) => {
   // }
 
   const handleDelete = async (apiID) => {
-    const url = 'http://localhost:8000/delete_api';
+    const url = 'http://18.224.15.185:8000/delete_api';
     const data = {
     userID: userState.userId ,
     projectID: projectID , 
@@ -143,8 +143,8 @@ const DisplayAPI = ({ projectID }) => {
                     <p className="mb-2 font-bold">{api.api_description}</p>
                   </div>
                   <div className="mb-4">
-                    <label className="font-bold">Generates URL:</label>
-                    <p className="mb-2">{api.name}</p>
+                    <label className="font-bold">Generated URL:</label>
+                    <p className="mb-2">{api.generated_url}</p>
                   </div>
                   <div className="mb-4">
                     <label className="font-bold">Response Type:</label>

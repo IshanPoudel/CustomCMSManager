@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import { login } from '../actions';
 import {useNavigate} from 'react-router-dom';
 
-const url ='http://localhost:8000/check_user_login';
+const url ='http://18.224.15.185:8000/check_user_login';
 
 
 const LoginPage = () => {

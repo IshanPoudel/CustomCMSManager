@@ -45,7 +45,7 @@ const CreateAPIForm = (props) => {
 
     // Send the API creation request to the server
     
-    const url ='http://localhost:8000/add_api';
+    const url ='http://18.224.15.185:8000/add_api';
     const data = {
         api_name : apiName,
         api_description: apiDescription,

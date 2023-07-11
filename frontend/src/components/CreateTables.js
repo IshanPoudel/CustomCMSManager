@@ -153,7 +153,7 @@ const CreateTables = (props) => {
   
       // Call API and create the query. Once the query is created, clear the forms.
       // Get userId and database_name.
-      const url = 'http://localhost:8000/create_table';
+      const url = 'http://18.224.15.185:8000/create_table';
       const data = {
         userId: userId,
         database_name: db_name,
