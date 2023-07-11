@@ -144,7 +144,8 @@ const DisplayAPI = ({ projectID }) => {
                   </div>
                   <div className="mb-4">
                     <label className="font-bold">Generated URL:</label>
-                    <p className="mb-2">{api.generated_url}</p>
+                    
+                    <p className="mb-2">{'https://18.224.15.185:8000/' +api.generated_url}</p>
                   </div>
                   <div className="mb-4">
                     <label className="font-bold">Response Type:</label>

@@ -36,3 +36,9 @@ Have an api_page.
     WHEN A NEW API IS ADDED , REFresh : IF I REFRESH WILL THE JIT TOKEN BE DIFFERENT?
     
 
+
+Things to do:
+When a user logs out make sure they are logged out. 
+Generate actual certificates. 
+Ask users to create an account.
+Where to make the requests for the app. 
