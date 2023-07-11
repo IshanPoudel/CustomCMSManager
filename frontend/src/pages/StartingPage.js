@@ -10,7 +10,7 @@ const StartingPage = () => {
 
   const fetchProjects = async () => {
     console.log('I got called to send projects');
-    const url = 'http://18.224.15.185:8000/get_projects';
+    const url = 'https://18.224.15.185:8000/get_projects';
     const data = {
       userID: userState.userId,
     };

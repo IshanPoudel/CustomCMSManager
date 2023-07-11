@@ -22,7 +22,7 @@ const Tables = () => {
   const [isLoading, setIsLoading] = useState(false); // Track loading state
 
   const fetchTables = async () => {
-    const url = 'http://18.224.15.185:8000/get_tables';
+    const url = 'https://18.224.15.185:8000/get_tables';
     const data = {
       database_name: db_name
     };
@@ -48,7 +48,7 @@ const Tables = () => {
   const fetchTableData = async (table_name) => {
     setIsLoading(true);
 
-    const url = 'http://18.224.15.185:8000/select_from_table';
+    const url = 'https://18.224.15.185:8000/select_from_table';
     const data = {
       database_name: db_name,
       table_name: table_name,

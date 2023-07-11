@@ -13,7 +13,7 @@ const Projects = () => {
   const navigate =useNavigate();
 
   const fetchDatabases = async () => {
-    const url = 'http://18.224.15.185:8000/get_databases';
+    const url = 'https://18.224.15.185:8000/get_databases';
     const data = {
       projectID: id,
       userID: userState.userId,
@@ -45,7 +45,7 @@ const Projects = () => {
 
   const handleDeleteDatabase = async(db_id)=>
   {
-    const url = 'http://18.224.15.185:8000/delete_database';
+    const url = 'https://18.224.15.185:8000/delete_database';
     const data = {
         userID: userState.userId , 
         projectID: id,

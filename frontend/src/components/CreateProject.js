@@ -10,7 +10,7 @@ const CreateProject = (props) => {
     event.preventDefault();
 
     // Make the API call to add the database
-    const url = 'http://18.224.15.185:8000/create_project';
+    const url = 'https://18.224.15.185:8000/create_project';
     const data = {
       userID: props.userId,
       projectName: projectName,

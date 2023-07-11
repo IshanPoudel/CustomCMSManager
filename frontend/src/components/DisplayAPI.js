@@ -15,7 +15,7 @@ const DisplayAPI = ({ projectID }) => {
 
   const fetchAPIData = async () => {
     try {
-      const response = await fetch('http://18.224.15.185:8000/get_apis', {
+      const response = await fetch('https://18.224.15.185:8000/get_apis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const DisplayAPI = ({ projectID }) => {
   // const handleDelete = async(apiID) =>
   // {
 
-  //   const url = 'http://18.224.15.185:8000/delete_api';
+  //   const url = 'https://18.224.15.185:8000/delete_api';
   //   const data = {
   //     userID: userState.userId ,
   //     projectID: projectID , 
@@ -88,7 +88,7 @@ const DisplayAPI = ({ projectID }) => {
   // }
 
   const handleDelete = async (apiID) => {
-    const url = 'http://18.224.15.185:8000/delete_api';
+    const url = 'https://18.224.15.185:8000/delete_api';
     const data = {
     userID: userState.userId ,
     projectID: projectID , 
