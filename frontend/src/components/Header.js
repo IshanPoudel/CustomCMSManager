@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { logoCMS, nameCMS } from '../assets';
 import store from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,8 @@ import { logout } from '../actions';
 const Header = () => {
   const userState = useSelector((store) => store.user);
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
@@ -18,7 +20,9 @@ const Header = () => {
 
   const handleSignOut = () => {
     console.log('Signing Out');
+    
     dispatch(logout());
+    navigate('/');
   };
 
   const handleClickOutside = (event) => {
