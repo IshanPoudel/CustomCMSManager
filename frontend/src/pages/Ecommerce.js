@@ -5,7 +5,7 @@ const Ecommerce = () => {
 
   useEffect(() => {
     // Fetch API data
-    fetch('https://18.224.15.185:8000/19bc9_get_char')
+    fetch('https://rapiddb.link/19bc9_get_char')
       .then(response => response.json())
       .then(data => {
         setCharacterData(data.result);

@@ -21,7 +21,7 @@ const CreateDatabases = (props) => {
     console.log('I called the API');
 
     // Make the API call to add the database
-    const url = 'https://18.224.15.185:8000/add_db_to_a_project';
+    const url = 'https://rapiddb.link/add_db_to_a_project';
     const data = {
       projectID: props.payload[0],
       database_name: databaseName,

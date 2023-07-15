@@ -4,7 +4,7 @@ import { ToastContainer , toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 //API to call the backend
-const url ='https://18.224.15.185:8000/add_new_user';
+const url ='https://rapiddb.link/add_new_user';
 
 const SignupPage = () => {
   const [username, setUsername] = useState('');

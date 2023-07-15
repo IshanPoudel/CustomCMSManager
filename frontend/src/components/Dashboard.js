@@ -16,7 +16,7 @@ const Dashboard = ({ projects_to_send, onProjectDeleted }) => {
   };
 
   const handleDeleteProject = async (projectId) => {
-    const url = 'https://18.224.15.185:8000/delete_project';
+    const url = 'https://rapiddb.link/delete_project';
     const data = {
       userID: userState.userId,
       projectID: projectId,

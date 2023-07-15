@@ -15,7 +15,7 @@ const DisplayAPI = ({ projectID }) => {
 
   const fetchAPIData = async () => {
     try {
-      const response = await fetch('https://18.224.15.185:8000/get_apis', {
+      const response = await fetch('https://rapiddb.link/get_apis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const DisplayAPI = ({ projectID }) => {
   // const handleDelete = async(apiID) =>
   // {
 
-  //   const url = 'https://18.224.15.185:8000/delete_api';
+  //   const url = 'https://rapiddb.link/delete_api';
   //   const data = {
   //     userID: userState.userId ,
   //     projectID: projectID , 
@@ -88,7 +88,7 @@ const DisplayAPI = ({ projectID }) => {
   // }
 
   const handleDelete = async (apiID) => {
-    const url = 'https://18.224.15.185:8000/delete_api';
+    const url = 'https://rapiddb.link/delete_api';
     const data = {
     userID: userState.userId ,
     projectID: projectID , 
@@ -145,7 +145,7 @@ const DisplayAPI = ({ projectID }) => {
                   <div className="mb-4">
                     <label className="font-bold">Generated URL:</label>
                     
-                    <p className="mb-2">{'https://18.224.15.185:8000/' +api.generated_url}</p>
+                    <p className="mb-2">{'https://rapiddb.link/' +api.generated_url}</p>
                   </div>
                   <div className="mb-4">
                     <label className="font-bold">Response Type:</label>
