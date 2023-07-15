@@ -1,8 +1,10 @@
 
 
-<h3 align="center">API creation made fast and simple.</h3>
+<div align="center">
+  <h3>API creation made fast and simple.</h3>
+  <p><a href="https://rapiddb.net">Try live demo</a></p>
+</div>
 
-<a href="https://rapiddb.net">Try live demo</a></p>
 
 
 # Online Database and Project Creation Tool
