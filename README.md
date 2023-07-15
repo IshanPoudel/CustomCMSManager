@@ -1,3 +1,10 @@
+
+
+<h3 align="center">API creation made fast and simple.</h3>
+
+<a href="https://rapiddb.net">Try live demo</a></p>
+
+
 # Online Database and Project Creation Tool
 
 Welcome to our Online Database and Project Creation Tool! This platform aims to simplify backend development by providing an intuitive interface for creating databases, managing tables visually, and generating APIs for your projects. With just a few clicks, you can create databases, add and delete rows using a visual UI, and quickly create APIs on the spot. This README will guide you through the process and highlight the key features of our tool.
